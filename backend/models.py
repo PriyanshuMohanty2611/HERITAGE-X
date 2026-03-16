@@ -33,7 +33,7 @@ class Monument(Base):
     __tablename__ = "monuments"
 
     id = Column(Integer, primary_key=True, index=True)
-    site_id = Column(Integer, ForeignKey("heritage_sites.id"))
+    site_id = Column(Integer, index=True, nullable=True)
     name = Column(String, index=True)
     construction_year = Column(String)
     architectural_style = Column(String)
@@ -61,8 +61,10 @@ class Booking(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_email = Column(String, index=True)
-    monument_id = Column(Integer, ForeignKey("monuments.id"))
+    monument_id = Column(Integer, index=True, nullable=True)
     booking_type = Column(String) # virtual, physical
+    user_location = Column(String)
+    payment_method = Column(String)
     status = Column(String, default="confirmed")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     

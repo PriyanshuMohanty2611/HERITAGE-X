@@ -2,13 +2,15 @@ from fastapi import FastAPI, HTTPException, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-import os, base64
+import os, base64, re, json
 from sqlalchemy.orm import Session
 from datetime import datetime
 
 # Import database and models
 from database import get_db, get_mongo, Base, engine
 from models import User, HeritageSite, Monument, Booking, Payment
+
+from typing import Optional
 
 # Auto-create all tables on startup
 Base.metadata.create_all(bind=engine)
@@ -46,35 +48,55 @@ class ChatRequest(BaseModel):
 async def chat_historian(req: ChatRequest):
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key or api_key == "your-gemini-api-key-here":
-        # Return a graceful mock response if no API key is set
         return {
             "response": (
                 "**AI Historian (Demo Mode)**\n\n"
                 f"You asked: *{req.message}*\n\n"
-                "To enable the real AI Historian, add your **GEMINI_API_KEY** "
-                "to `backend/.env`. The platform is fully operational in all other respects."
+                "Add your **GEMINI_API_KEY** to `backend/.env` to enable the real AI."
             )
         }
+
+    SYSTEM = (
+        "You are PrinceAI, the core intelligence behind Heritage-X and your Indian Compass. "
+        "You guide users through India's cultural and spiritual heritage. "
+        "When suggesting travel plans or budget guidance, PROVIDE SPECIFIC FOOD RECOMMENDATIONS & PRICES based on real data: "
+        "- **Agra (Taj Mahal):** Mughlai cuisine (Butter Chicken, Rogan Josh), Petha from Panchhi Petha. Joney's Place (avg ₹500 for two). "
+        "- **Konark:** Fresh seafood (Prawn Rolls), Odia Thali (INR 100-200) at Hotel Chandrabhaga. "
+        "- **Hampi:** South Indian Thalis on banana leaves at Mango Tree (₹200-300). Filter coffee (₹30-80). "
+        "- **Madurai:** Idli/Dosa at Hotel Sree Sabarees (₹80-90). Paruthi Paal (₹20). "
+        "- **Amritsar:** Amritsari Kulcha at Bharawan Da Dhaba (₹250). Jalebis at Gurudas Ram. "
+        "Be helpful, brilliant, and ensure markdown formatting for a premium experience. Never break character."
+    )
+
+    # Try models in preferred order — gemini-2.5-flash confirmed working
+    MODELS = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"]
+    last_error = ""
 
     try:
         from google import genai
         from google.genai import types
         client = genai.Client(api_key=api_key)
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=req.message,
-            config=types.GenerateContentConfig(
-                system_instruction=(
-                    "You are the AI Historian for Heritage-X, an advanced SaaS platform "
-                    "digitizing world heritage. Answer questions about monuments, architecture, "
-                    "and cultural heritage professionally, accurately, and concisely. "
-                    "Use markdown formatting. Be brilliant, slightly mysterious, highly factual."
+
+        for model_name in MODELS:
+            try:
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=req.message,
+                    config=types.GenerateContentConfig(system_instruction=SYSTEM)
                 )
-            )
-        )
-        return {"response": response.text}
+                print(f"✅ Chat answered by {model_name}")
+                return {"response": response.text, "model": model_name}
+            except Exception as model_err:
+                last_error = str(model_err)
+                print(f"⚠️  {model_name} failed: {model_err}")
+                continue
+
+        # All models failed
+        return {"response": f"**All Gemini models unavailable.**\n\nLast error: `{last_error}`\n\nCheck your API key and quota."}
+
     except Exception as e:
-        return {"response": f"**AI Engine Error:** {str(e)}\n\nPlease verify your Gemini API key."}
+        print(f"❌ Chat endpoint error: {e}")
+        return {"response": f"**AI Error:** {str(e)}"}
 
 # ─── Authentication ──────────────────────────────────────────────────────────
 
@@ -155,8 +177,17 @@ def get_monuments(db: Session = Depends(get_db)):
         # Return hardcoded data if DB fails
         return {"monuments": [
             {"id": 1, "name": "Konark Sun Temple", "location": "Odisha, India", "description": "13th-century temple of the Sun God", "health": 82},
-            {"id": 2, "name": "Hampi Ruins", "location": "Karnataka, India", "description": "UNESCO World Heritage Site of Vijayanagara Empire"},
-            {"id": 3, "name": "Ajanta Caves", "location": "Maharashtra, India", "description": "Rock-cut Buddhist cave monuments"},
+            {"id": 2, "name": "Taj Mahal", "location": "Agra, India", "description": "Ivory-white marble mausoleum", "health": 95},
+            {"id": 3, "name": "Hampi Ruins", "location": "Karnataka, India", "description": "UNESCO World Heritage Site of Vijayanagara Empire", "health": 91},
+            {"id": 4, "name": "Ajanta Caves", "location": "Maharashtra, India", "description": "Rock-cut Buddhist cave monuments", "health": 88},
+            {"id": 5, "name": "Qutub Minar", "location": "Delhi, India", "description": "World's tallest brick minaret", "health": 94},
+            {"id": 6, "name": "Ellora Caves", "location": "Maharashtra, India", "description": "Largest monolithic rock excavation", "health": 96},
+            {"id": 7, "name": "Khajuraho Temples", "location": "Madhya Pradesh, India", "description": "Nagara-style architectural masterpiece", "health": 89},
+            {"id": 8, "name": "Harmandir Sahib", "location": "Punjab, India", "description": "The Golden Temple of Amritsar", "health": 98},
+            {"id": 9, "name": "Meenakshi Temple", "location": "Tamil Nadu, India", "description": "Dravidian-style temple of Madurai", "health": 92},
+            {"id": 10, "name": "Mahabalipuram", "location": "Tamil Nadu, India", "description": "Pallava-era shore temples", "health": 87},
+            {"id": 11, "name": "Sanchi Stupa", "location": "Madhya Pradesh, India", "description": "Mauryan-era Buddhist monument", "health": 93},
+            {"id": 12, "name": "Victoria Memorial", "location": "West Bengal, India", "description": "Indo-Saracenic marble monument", "health": 91}
         ]}
 
 # ─── Bookings ────────────────────────────────────────────────────────────────
@@ -166,6 +197,8 @@ class BookingRequest(BaseModel):
     monument_id: int
     booking_type: str
     amount: float
+    location: Optional[str] = None
+    payment_method: Optional[str] = None
 
 @app.post("/api/booking/create")
 def create_booking(req: BookingRequest, db: Session = Depends(get_db)):
@@ -176,6 +209,8 @@ def create_booking(req: BookingRequest, db: Session = Depends(get_db)):
             user_email=req.user_email,
             monument_id=req.monument_id,
             booking_type=req.booking_type,
+            user_location=req.location,
+            payment_method=req.payment_method,
             status="confirmed"
         )
         db.add(new_booking)
@@ -271,7 +306,7 @@ Identify the monument in this image and respond ONLY with a valid JSON object in
 If you cannot identify the monument, still return the JSON with best guesses and "heritage_score": 0."""
 
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-2.5-flash",
             contents=[
                 types.Part.from_bytes(data=image_bytes, mime_type=mime_type),
                 types.Part.from_text(text=prompt)
@@ -322,39 +357,64 @@ async def extract_survey_data(req: SurveyRequest):
 
         client = genai.Client(api_key=api_key)
 
-        prompt = f"""You are a senior archaeologist writing a professional survey report.
-Provide a detailed survey data extraction for: {req.monument_name}
+        prompt = f"""You are a senior archaeologist and cultural travel guide writing a professional survey report.
+Provide a detailed survey and visitor guide for: {req.monument_name}
 
 Respond ONLY with valid JSON (no markdown, no explanation):
 {{
-  "gpr_findings": "Ground Penetrating Radar analysis summary (2-3 sentences about sub-surface findings)",
+  "gpr_findings": "Detailed Ground Penetrating Radar summary",
   "structural_integrity": 87,
-  "estimated_foundation_depth_m": 14,
-  "material_composition": ["Primary material", "Secondary material"],
-  "damage_zones": ["Zone description 1", "Zone description 2"],
-  "restoration_recommendations": ["Recommendation 1", "Recommendation 2", "Recommendation 3"],
-  "last_survey_year": 2023,
-  "survey_agency": "Survey agency name",
-  "pollution_index": 34,
-  "humidity_risk": "Moderate",
-  "tourist_pressure": "High",
+  "estimated_foundation_depth_m": 12,
+  "material_composition": ["Stone", "Iron Clamps"],
+  "damage_zones": ["East Corridor", "Foundation Base"],
+  "restoration_recommendations": ["Recommendation 1", "Recommendation 2"],
+  "last_survey_year": 2024,
+  "survey_agency": "Heritage-X Autonomous Scan",
+  "pollution_index": 22,
+  "humidity_risk": "Low",
+  "tourist_pressure": "Moderate",
+  "what_to_do": "Detailed sentence on the best activity there",
+  "where_to_go": "Detailed sentence on the best specific spot there",
   "timeline": [
-    {{"year": "1250 CE", "event": "Construction completed"}},
-    {{"year": "1500 CE", "event": "Peak period"}},
-    {{"year": "1800 CE", "event": "Decline period"}},
-    {{"year": "2025 CE", "event": "Active conservation"}}
+    {{"year": "500 BC", "event": "Archaeological Layer 1"}},
+    {{"year": "1200 CE", "event": "Main Construction"}},
+    {{"year": "2024 CE", "event": "AI Digital Twin Created"}}
   ]
 }}"""
 
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt
-        )
+        api_key = os.getenv("GEMINI_API_KEY")
+        openai_key = os.getenv("OPENAI_API_KEY")
 
-        raw = response.text.strip()
+        # Try Gemini first
+        try:
+            from google import genai
+            client = genai.Client(api_key=api_key)
+            response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
+            raw = response.text.strip()
+        except Exception as e:
+            print(f"⚠️ Gemini survey failed: {e}. Trying OpenAI...")
+            if openai_key and openai_key.startswith("sk-"):
+                import openai
+                client = openai.OpenAI(api_key=openai_key)
+                response = client.chat.completions.create(
+                    model="gpt-4o",
+                    messages=[{"role": "user", "content": prompt}]
+                )
+                raw = response.choices[0].message.content.strip()
+            else:
+                raise e
+
+        # Standard Extraction Logic
+        json_match = re.search(r'\{.*\}', raw, re.DOTALL)
+        if json_match:
+            try:
+                return json.loads(json_match.group(0))
+            except:
+                pass
+                
         raw = re.sub(r"```json|```", "", raw).strip()
-        result = json.loads(raw)
-        return result
+        return json.loads(raw)
 
     except Exception as e:
-        return {"error": str(e)}
+        print(f"❌ Final Survey error: {e}")
+        return {"error": str(e), "gpr_findings": "Scan interrupted. Please verify API keys.", "timeline": []}

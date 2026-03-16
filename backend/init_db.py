@@ -1,5 +1,5 @@
 from database import engine, Base
-from models import User, HeritageSite, Monument, SensorData
+from models import User, HeritageSite, Monument, SensorData, Booking, Payment
 
 def init_db():
     print("Creating database tables...")
