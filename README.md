@@ -9,69 +9,124 @@
 
 ## 📑 Table of Contents
 
-1. [Executive Summary](#-executive-summary)
-2. [Core Intelligence Nodes](#-core-intelligence-nodes)
-   - [V-Museum Matrix (3D/VR)](#v-museum-matrix-3dvr)
+1. [Vision & Digital Sovereignty](#-vision--digital-sovereignty)
+2. [Executive Summary](#-executive-summary)
+3. [The Heritage Matrix: Core Intelligence Nodes](#-the-heritage-matrix-core-intelligence-nodes)
+   - [V-Museum Matrix (3D/VR/AR)](#v-museum-matrix-3dvrar)
    - [Living Traditions (Gastronomy & ICH)](#living-traditions-gastronomy--ich)
    - [Unsung Legacy (Freedom Archive)](#unsung-legacy-freedom-archive)
-   - [Heritage Circuit Generator](#heritage-circuit-generator)
-3. [AI & Neural Protocols](#-ai--neural-protocols)
+   - [Digital Repository (Archives)](#digital-repository-archives)
+   - [Heritage Circuit Generator (Logic Engine)](#heritage-circuit-generator-logic-engine)
+   - [Cultural Nexus (Activities & Gamification)](#cultural-nexus-activities--gamification)
+   - [Temporal Archive (History & Timelines)](#temporal-archive-history--timelines)
+4. [AI & Neural Protocols](#-ai--neural-protocols)
    - [Prince AI (Indian Compass)](#prince-ai-indian-compass)
-   - [Neural Translator v2.0](#neural-translator-v20)
-4. [Technical Architecture](#-technical-architecture)
-   - [Frontend Tech Stack](#frontend-tech-stack)
-   - [Backend Tech Stack](#backend-tech-stack)
-   - [Infrastructure & DevOps](#infrastructure--devops)
-5. [Recent Implementation Log](#-recent-implementation-log)
-6. [Resolved Issues & Optimizations](#-resolved-issues--optimizations)
-7. [Installation & Deployment](#-installation--deployment)
-8. [Contribution & Sovereignty](#-contribution--sovereignty)
+   - [Neural Translator v2.0 (Global Singleton)](#neural-translator-v20-global-singleton)
+5. [The Technology Stack: Deep Technical Dive](#-the-technology-stack-deep-technical-dive)
+   - [Frontend: Next.js 15+ & Tailwind CSS 4](#frontend-nextjs-15--tailwind-css-4)
+   - [Spatial Rendering: Three.js & R3F](#spatial-rendering-threejs--r3f)
+   - [Backend: FastAPI & Python 3.11+](#backend-fastapi--python-311)
+   - [Database: Hybrid SQL/NoSQL Architecture](#database-hybrid-sqlnosql-architecture)
+   - [AI Integration: Google Gemini Pro Matrix](#ai-integration-google-gemini-pro-matrix)
+6. [UI/UX Design System & Aesthetics](#-uiux-design-system--aesthetics)
+7. [Implementation Log & Post-Mortem](#-implementation-log--post-mortem)
+8. [Resolved Architectural Issues](#-resolved-architectural-issues)
+9. [API Documentation](#-api-documentation)
+10. [Installation, Environment & Deployment](#-installation-environment--deployment)
+11. [Future Roadmap & Cultural Growth](#-future-roadmap--cultural-growth)
+12. [Contribution & Sovereignty Guidelines](#-contribution--sovereignty-guidelines)
+13. [Glossary of Neural Heritage](#-glossary-of-neural-heritage)
+
+---
+
+## 🌎 Vision & Digital Sovereignty
+
+Heritage-X is built on the principle of **Cultural Sovereignty**. In an era where history is often fragmented across physical borders and digital silos, Heritage-X serves as a unified, decentralized ledger for the subcontinent's memory.
+
+### The Problem
+
+- **Physical Decay**: Heritage sites and manuscripts face degradation from environmental factors.
+- **Data Fragmentation**: Cultural information is scattered across Government portals, private archives, and oral traditions.
+- **Accessibility Barriers**: Immersive heritage experiences are often restricted by geography or cost.
+
+### The Neural Solution
+
+By leveraging **Universal Intelligence (AI)** and **Spatial Computing**, we are creating a "Digital Twin" of the subcontinent's culture. This isn't just a museum; it's a living archive that breathes through community contribution and machine-learned insights.
 
 ---
 
 ## 🏛️ Executive Summary
 
-Heritage-X isn't just a website; it's a **Decentralized Cultural Ledger**. It integrates the visual and functional structure of the **Indian Culture Portal (Ministry of Culture)** into a modern, cinematic SaaS ecosystem. The platform serves three primary personas:
+Heritage-X is a high-performance web ecosystem that integrates the visual structure and data density of the **Indian Culture Portal (indianculture.gov.in)** into a premium, cinematic SaaS interface.
 
-- **The Modern Voyager**: Seeking immersive 3D walkthroughs and AI-generated travel circuits.
-- **The Scholar/Researcher**: Accessing detailed manuscript archives and unsung biographical dossiers.
-- **The Community Custodian**: Contributing to the "Living Archives" through local stories and culinary heritage.
+### Key Stakeholders
+
+- **Modern Voyagers**: Users who seek to explore sites like Konark or Hampi from their devices with 360° fidelity.
+- **Scholars & Researchers**: Academic users who require access to biographical dossiers, district-level historical data, and rare manuscript repositories.
+- **Local Communities**: The guardians of oral traditions who can "sync" their regional knowledge into the global matrix.
 
 ---
 
-## 🧩 Core Intelligence Nodes
+## 🧩 The Heritage Matrix: Core Intelligence Nodes
 
-### V-Museum Matrix (3D/VR)
+### V-Museum Matrix (3D/VR/AR)
 
-The pinnacle of spatial heritage. This module replicats the "3D Explorations" of the Indian Culture Portal.
+The most technically intensive node of the platform, designed to replicate and enhance the "3D Explorations" of the Indian Culture Portal.
 
-- **Neural Walkthroughs**: WebGL-powered 360° environments for sites like the Konark Sun Temple and Ajanta Caves.
-- **Artifact Sanctum**: Interactive 3D object viewer using **React Three Fiber**, allowing users to inspect 12k+ artifacts with 8.4B polygons accuracy.
-- **VR Integration**: One-click initialization for VR headsets and coordinate-based AR overlays via the AR Heritage Feed.
+#### Technical Implementation
+
+- **Spatial Walkthroughs**: Utilizes WebGL-based panoramic rendering to provide 360° tours of sites.
+- **Lidar Scanning Protocol**: Artifacts are rendered using **React Three Fiber**, supporting high-poly models through Draco mesh compression.
+- **The Obsidian Viewer**: A custom-built 3D viewport that allows users to manipulate artifacts (rotate, zoom, inspect textures) while receiving AI-generated descriptions of their historical significance.
+
+#### Features
+
+- **Hero Exhibit Switcher**: A dynamic interface allowing users to jump between different heritage sites (e.g., Sun Temple, Ajanta Caves) instantly.
+- **VR Node Download**: Users can download high-fidelity 3D assets formatted for standalone VR headsets.
+- **Coordinate-Based AR Feed**: A mobile-optimized view that overlays heritage data onto the user's camera feed based on GPS coordinates.
 
 ### Living Traditions (Gastronomy & ICH)
 
-Inspired by the "Food & Culture" section, this node charts the intangible wealth of the subcontinent.
+Focused on the "Intangible Cultural Heritage" (ICH) and the "Food & Culture" metadata identified during browser investigations.
 
-- **Gastronomic Matrix**: Cinematic cards mapping the "Spice Route Vectors" and regional culinary bio-diversity.
-- **ICH Repository**: Decentralized nodes for Performing Arts (Baul, Ragas), Traditional Crafts (Pashmina, Pattachitra), and local rituals.
-- **Community Archives**: A portal where users can sync family histories and sacred recipes to the national archive.
+#### Gastronomy Matrix
+
+- **Cinematic Culinary Cards**: Each card details a specific food item's origin, complexity, and cultural "bio."
+- **Spice Route Vectors**: A visualization of how ingredients migrated across the subcontinent.
+- **Recipe Intelligence**: AI-assisted breakdown of traditional recipes into their historical components.
+
+#### Intangible Nodes
+
+- **Performing Arts Hub**: Dedicated sections for Classical Performance (Ragas, Mudras) and Folk Traditions (Baul, Kalbelia).
+- **Craft Repositories**: Detailed dossiers on Pattachitra, Pashmina weaving, and Dokra metal casting.
 
 ### Unsung Legacy (Freedom Archive)
 
-A dedicated research hub for the "Footprints of Freedom".
+A dedicated research node for "Footprints of Freedom" and "Unsung Heroes."
 
-- **Biographical Dossiers**: In-depth profiles of revolutionary leaders like Komaram Bheem and Birsa Munda.
-- **Digital District Repository**: A map-based trace system for resistance nodes across 700+ districts.
-- **Constitutional Sovereignty**: Dedicated access points for authenticated historical records and freedom movement timelines.
+#### Regional Historical Matrix
 
-### Heritage Circuit Generator
+- **District-Level Mapping**: A data-driven approach to tracing freedom movements. Each district has a "Resistence Node" with martyrs' profiles and local timelines.
+- **Biography Dossiers**: High-fidelity biographical banners for leaders like **Komaram Bheem**, **Birsa Munda**, and **Matangini Hazra**, featuring curated imagery from government archives.
+- **Constitutional Sovereignty**: A section dedicated to the legal and foundational history of the modern Indian state.
 
-A sophisticated itinerary engine that builds travel routes based on:
+### Digital Repository (Archives)
 
-- **starting Location & Interest Toggles** (Temples, Forts, Nature).
-- **Temporal constraints** (1-Day Pulse vs 7-Day Deep-Dive).
-- **Budgetary Matrices** (Budget, Mid-range, Luxury).
+The central storage hub for digitized cultural assets.
+
+- **Categorization Engine**: Assets are sorted into Manuscripts, Rare Books, Paintings, and Archival Records.
+- **Metadata Standards**: Every entry follows a rigorous internal schema: `place_name`, `heritage_type`, `historical_importance`, and `UNESCO_status`.
+- **Search Terminal**: A high-speed interface where users can query the archive by region, dynasty, or material used.
+
+### Heritage Circuit Generator (Logic Engine)
+
+A core feature that transforms static knowledge into actionable itineraries.
+
+- **Multi-Vector Input**: Users define their starting location, number of days, interests (Temples, Forts, Nature), and budget.
+- **Itinerary Logic**: The system weights sites by historical importance, rating, and geographical proximity to generate a logical "Pulse" (one-day) or "Deep Dive" (multiple days).
+- **Mode Options**:
+  - **Solo Adventurer (Budget)**: Optimized for local transport and street-food nodes.
+  - **Executive Pulse (Luxury)**: Optimized for heritage hotels and private guides.
 
 ---
 
@@ -79,175 +134,215 @@ A sophisticated itinerary engine that builds travel routes based on:
 
 ### Prince AI (Indian Compass)
 
-The platform's primary LLM interface.
+The primary intelligence interface powered by **Google Gemini Pro**.
 
-- **Contextual Heritage Intelligence**: Trained to answer queries about Indian spiritual landscapes, local customs, and logistical entry fees.
-- **Budget Breakdown Engine**: Real-time cost estimation for hotels, food, and transport across 20+ major heritage hubs.
-- **Neural Pulse**: Powered by **Google Gemini Pro**, providing concave awareness of Indian traditions.
+- **The "Indian Compass" Prompting**: I have implemented a specialized system instruction that forces the AI to speak as a "Sovereign Guide." It focuses on spiritual landscapes, local customs, and logistical accuracy.
+- **Budgetary Calculation**: Prince AI can perform real-time cost analysis for 20+ heritage hubs (Taj Mahal, Hampi, Varanasi, etc.), breaking down costs for hotels, food, transport, and entry.
+- **Gamified Engagement**: Users can ask about "nearby attractions" or "hidden gems," and the AI will correlate its response with the Digital Repository's data.
 
-### Neural Translator v2.0
+### Neural Translator v2.0 (Global Singleton)
 
-A global linguistic bridge integrated into the `RootLayout`.
+Fulfilling the user requirement for a "visible everywhere" translation tool.
 
-- **Cross-Sector Presence**: Accessible from every module, providing real-time translation into Hindi, Tamil, Bengali, French, Japanese, and more.
-- **Neural Selection Matrix**: A slide-in interface that applies linguistic protocols platform-wide.
-
----
-
-## 💻 Technical Architecture
-
-### Frontend Tech Stack
-
-| Component     | Technology               | Rationale                                                                                    |
-| :------------ | :----------------------- | :------------------------------------------------------------------------------------------- |
-| **Framework** | Next.js 15+ (App Router) | High-performance SSR and SEO-optimized heritage crawling.                                    |
-| **Styling**   | Tailwind CSS 4           | Utility-first architecture with custom design tokens for "Heritage Indigo" and "Legacy Red". |
-| **Icons**     | Lucide React             | High-fidelity, consistent iconography for terminal triggers.                                 |
-| **3D Engine** | Three.js / R3F           | Powering the V-Museum Matrix with spatial artifact rendering.                                |
-| **Maps**      | React-Leaflet            | Coordinate-based district tracing and circuit mapping.                                       |
-| **State**     | React Context API        | Fragmented state management for Auth and Global Theme protocols.                             |
-
-### Backend Tech Stack
-
-| Component            | Technology             | Rationale                                                                  |
-| :------------------- | :--------------------- | :------------------------------------------------------------------------- |
-| **Core API**         | FastAPI (Python 3.11+) | Asynchronous, lightning-fast endpoints for AI streaming and data fetching. |
-| **Database (SQL)**   | SQLite / SQLAlchemy    | Structured heritage mapping with ACID compliance.                          |
-| **Database (NoSQL)** | MongoDB / PyMongo      | Storing unstructured community stories and Living Archive nodes.           |
-| **AI LLM**           | Google GenAI (Gemini)  | Native intelligence for Prince AI and cultural analysis.                   |
-| **Server**           | Uvicorn                | ASGI standard for high-concurrency neural streams.                         |
+- **Global Context Integration**: Unlike the local translator previously on the "Visit" page, v2.0 is a persistent component in the `RootLayout`.
+- **Linguistic Matrix**: Supports offline-capable and neural translations into Hindi, Tamil, Bengali, French, German, Japanese, and Spanish.
+- **Premium UI**: Features a glassmorphic sidebar/modal that slides in when triggered, providing a "Translate Intelligence" overlay across any heritage sector.
 
 ---
 
-## 🛠️ Recent Implementation Log
+## 💻 The Technology Stack: Deep Technical Dive
 
-- **[ARCH-V01]**: Implemented the **Sovereign Asset Terminal** (TopHeader) with unified hamburger navigation.
-- **[ARCH-V02]**: Created the **V-Museum Hub** using spatial WebGL components.
-- **[ARCH-V03]**: Integrated the **Unsung Heroes** biographical matrix.
-- **[ARCH-V04]**: Launched the **Neural Translator v2.0** as a global singleton.
-- **[ARCH-V05]**: Unified all social connectivity into the **Global Heritage Footer**.
-- **[ARCH-V06]**: Synchronized the **Cultural Nexus** (Activities) and **Temporal Archive** (History) into the sidebar protocol.
+### Frontend: Next.js 15+ & Tailwind CSS 4
 
----
+The frontend architecture is optimized for **Core Web Vitals** and high-fidelity rendering.
 
-## 🏗️ Technical Deep Dives
+- **App Router Sovereignty**: Utilizing Server Components for heavy data lifting (like the Archive list) and Client Components for interactivity (like the Map or 3D viewer).
+- **Tailwind CSS 4 Implementation**:
+  - **Design Tokens**: Custom variables for colors like `#2563eb` (Heritage Indigo), `#ef4444` (Legacy Red), and `#f59e0b` (Imperial Amber).
+  - **Dynamic Utility Layer**: Custom utilities for `@apply` patterns like `.glass`, `.sidebar-glass`, and `.btn-enhanced`.
+  - **Layout Sovereignty**: A strict 12-column grid system ensured through Tailwind's `grid-cols-12` and `col-span` utilities.
 
-### 🌐 Frontend Protocol: The Heritage Matrix
+### Spatial Rendering: Three.js & R3F
 
-The frontend is constructed using an **Atomic Design Pattern** within the Next.js App Router environment.
+To support the V-Museum Matrix, we use a sophisticated 3D pipeline.
 
-#### 1. Next.js 16 (Canary Tier)
+- **Scene Management**: Using `@react-three/fiber` to manage lighting (HDRI environments), cameras (OrbitControls), and mesh lifecycle.
+- **Optimization Layer**: Implementing `Suspense` and `@react-three/drei`'s `useGLTF` to lazily load heavy 3D scans, preventing the application from freezing during heritage immersion.
 
-- **Rationale**: We utilize Next.js for its superior **Incremental Static Regeneration (ISR)** capabilities, allowing heritage site data to be updated in the background without a full rebuild.
-- **Implementation**: The `app/` directory uses a folder-based routing system (`/museum`, `/heroes`, `/traditions`), each with its own `layout.tsx` for sector-specific theming.
+### Backend: FastAPI & Python 3.11+
 
-#### 2. Tailwind CSS 4 (Quantum Engineering)
+The backend is designed for high concurrency and AI streaming.
 
-- **Theming Engine**: We've bypassed traditional CSS-in-JS for Tailwind 4's native `@theme` capabilities. This allows for fluid design tokens like `var(--color-heritage-indigo)` which react to the platform's global theme context.
-- **Grid Sovereignty**: A strict 12-column responsive grid ensures that cinematic cards and spatial nodes maintain visual balance across 4K displays and mobile interfaces.
+- **FastAPI Core**: Chosen for its native support for `async/await` and auto-generated OpenAPI documentation.
+- **Pydantic Validation**: Every API interaction is guarded by Pydantic models to ensure data integrity.
+- **Middleware Matrix**: Custom middleware for CORS, logging, and security header injection.
 
-#### 3. Three.js & React Three Fiber (Spatial Layer)
+### Database: Hybrid SQL/NoSQL Architecture
 
-- **3D Artifact Rendering**: The V-Museum module utilizes `@react-three/fiber` to bridge React's declarative nature with Three.js's imperative 3D engine.
-- **Optimization**: We use `useGLTF` from `@react-three/drei` with Draco compression to ensure that high-polygon scans are streamable.
+- **Relational Ledger (SQLite/SQLAlchemy)**: Manages structured data like monument locations, guide profiles, and booking records.
+- **Document Store (MongoDB)**: Manages unstructured community content, user memories, and large-text historical narratives.
+- **Synchronization Hub**: A Python-based script infrastructure that keeps the SQL/NoSQL layers in sync during high-volume contributions.
 
-### 🧠 Backend Protocol: The Neural Core
+### AI Integration: Google Gemini Pro Matrix
 
-The backend is a high-currency FastAPI ecosystem designed for real-time cultural intelligence.
-
-#### 1. FastAPI (Asynchronous Sovereignty)
-
-- **Async/Await**: Every endpoint, from Prince AI's streaming response to the Digital Repository's upload buffer, is built on non-blocking I/O.
-- **Pydantic V2**: Rigorous schema validation ensures that any data entering the heritage ledger is verified for temporal and spatial accuracy.
-
-#### 2. Google GenAI (Gemini Pro Matrix)
-
-- **Neural Integration**: Unlike standard chatbots, Prince AI uses **Function Calling** and **System Instruction** sets to act as a "Sovereign Guide". It doesn't just chat; it calculates travel budgets and correlates historical timelines.
-- **Linguistic Logic**: The Neural Translator uses Gemini's multi-lingual model to handle complex Indian dialects with high semantic precision.
-
-#### 3. Database Layer (Hybrid Architecture)
-
-- **SQLite (SQLAlchemy)**: Used for high-integrity relational data—mapping monuments to regions, guides to credentials, and artifacts to historical periods.
-- **MongoDB**: Reserved for the "Living Archive" where user-generated stories, family histories, and unstructured cultural memories require a flexible schema.
+- **Native SDK Integration**: We use the `google-genai` Python library for direct, asynchronous access to the LLM.
+- **Instruction Tuning**: A robust `system_instruction` is used to maintain the "Prince AI" persona, ensuring the model doesn't hallucinate non-historical data.
 
 ---
 
-## 🛠️ Implementation Post-Mortem: Resolved Bottlenecks
+## 🎨 UI/UX Design System & Aesthetics
 
-### 1. The "Alignment Crisis" Resolved
+The design system of Heritage-X follows a **Premium Heritage Dark** theme.
 
-**The Issue**: Elements in the `explore/` and `history/` pages were overlapping during browser resizing.
-**The Fix**:
+### Color Palette
 
-- Replaced floating `div` structures with a unified `display: grid` system.
-- Standardized `gap` scales to `8px / 16px / 24px / 32px`.
-- Implemented `clamp()` for typography to ensure headings don't overflow containers.
+- **Primary**: `Heritage Indigo` - Representing the deep blue of spiritual wisdom.
+- **Accent**: `Imperial Amber` - Inspired by the sandstone of Jaipur and the lighting of the Konark Sun Temple.
+- **Status**: `Martyr Red` - Used specifically for the Unsung Legacy node to denote courage and sovereignty.
 
-### 2. Neural Translation Redundancy
+### Typography
 
-**The Issue**: Localized translator instances in various pages were causing state conflicts.
-**The Fix**:
+- **Headings**: `Plus Jakarta Sans` - A modern, clean sans-serif for high readability.
+- **Technical/Mono**: `JetBrains Mono` - Used for coordinate data, ID tags, and "Neural Scans."
+- **Quotes/Narratives**: `Italic Serif` - To give a sense of historical weight to biographies and legends.
 
-- Extracted the translator into `components/FloatingTranslator.tsx` as a global singleton.
-- Integrated it into the `RootLayout` with a `z-index` protocol of `9998`, ensuring it functions harmoniously with the primary AI chatbot.
+### Component Logic
 
-### 3. Navigation Terminal Logic
-
-**The Issue**: Inconsistent icon triggers in the header were hindering user discoverability.
-**The Fix**:
-
-- Refactored the trigger to a high-fidelity **Hamburger Menu** icon.
-- Added a `backdrop-blur-3xl` dropdown matrix for cinematic entry into all heritage sectors.
+- **Cinematic Cards**: 50px-60px border-radius, `glass` background effects, and 1000ms transition durations on hover.
+- **12-Column Responsive Grid**: Ensuring that even on mobile, the high-fidelity images and data matrices stack logically without overlapping.
+- **Micro-Animations**: Pulse indicators for "Live Nodes," spin-slow animations for orbital UI elements, and slide-in effects for modals.
 
 ---
 
-## 🚀 Installation & Deployment
+## 🛠️ Implementation Log & Post-Mortem
 
-### Prerequisites
+This section documents the chronological development of the Heritage-X platform.
 
-- Node.js 18+
-- Python 3.10+
-- Google GenAI API Key
+### Phase 1: The Core Infrastructure
 
-### Frontend Setup
+- Initialized Next.js and Tailwind project.
+- Created the **Global Authentication Protocol** (`AuthContext`).
+- Built the **Sovereign Assets Sidebar** with the integrated theme toggler.
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+### Phase 2: The Archives & Maps
 
-### Backend Setup
+- Implemented the **Digital Repository** with grid/list view toggles.
+- Integrated **React-Leaflet** for the Heritage Map.
+- Developed the **Heritage Circuit Generator** logic and UI.
 
-```bash
-cd backend
-pip install -r requirements.txt
-# Configure .env with GOOGLE_API_KEY
-python main.py
-```
+### Phase 3: AI & Interactivity
 
-### Environment Variables (.env)
+- Launched **Prince AI** (FloatingChatbot) with Gemini integration.
+- Built the **Activity Nexus** (Cultural gamification).
+- Developed the **TopHeader** "Sovereign Asset Terminal" dropdown.
+
+### Phase 4: Expansion & Parity
+
+- Investigated **Indian Culture Portal** uniqueness.
+- Built **V-Museum**, **Living Traditions**, and **Unsung Heroes** modules.
+- Upgraded to **Neural Translator v2.0** as a global singleton.
+- Finalized the **Global Heritage Footer** with social matrix connectivity.
+
+---
+
+## 🛡️ Resolved Architectural Issues
+
+Throughout development, we faced and solved several high-complexity bottlenecks.
+
+### 1. The "Alignment & Overlay" Protocol
+
+**Issue**: Elements were overlapping on medium-sized screens, and buttons were often "lost" behind floating cards.
+**Solution**: Refactored the entire interface into a strict grid system. Removed absolute positioning on most interactive elements and replaced them with `flex` or `grid` containers with explicit `gap` and `padding` values.
+
+### 2. Icon Redundancy & Linting
+
+**Issue**: Using multiple icons for similar triggers led to user confusion and "Missing Icon" linting errors.
+**The Fix**: Standardized the icon set from **Lucide React**. Replaced the "Asset Terminal" trigger with a universal **Hamburger Menu** icon to align with mobile patterns.
+
+### 3. State Sync for Translation
+
+**Issue**: Local translation states in different sectors caused the translator to "reset" when navigating.
+**The Fix**: Extracted the state into a separate component and used the `RootLayout` to maintain the `showTranslator` visibility globally.
+
+### 4. Image Fallbacks
+
+**Issue**: Reliance on external cultural images often led to broken links (404 errors) during development.
+**The Fix**: Implemented an `onError` protocol for every `img` tag that defaults to a high-fidelity Unsplash heritage placeholder.
+
+---
+
+## 📡 API Documentation
+
+### GET `/api/monuments`
+
+- **Description**: Fetches all monument nodes from the Heritage Ledger.
+- **Response**: `List[MonumentSchema]`
+
+### POST `/api/chat`
+
+- **Description**: Sends a query to the Prince AI Neural Core.
+- **Body**: `{ message: string }`
+- **Return**: `{ response: string }` (Markdown formatted)
+
+### GET `/api/traditions`
+
+- **Description**: Fetches the Gastronomy and ICH repository data.
+- **Response**: `JSON Matrix`
+
+---
+
+## 🚀 Installation, Environment & Deployment
+
+### Hardware Requirements
+
+- **Frontend**: 4GB RAM minimum (due to 3D rendering).
+- **Backend**: Python 3.11 with 2vCPU for AI response processing.
+
+### Environment Variable Suite (`.env`)
 
 ```env
-# BACKEND
+# BACKEND PROTOCOLS
 DATABASE_URL=sqlite:///./heritage_x.db
-GOOGLE_API_KEY=your_key_here
-MONGODB_URL=mongodb://localhost:27017
+GOOGLE_API_KEY=AIzaSy...
+MONGO_URI=mongodb+srv://...
+SECRET_KEY=sovereign_heritage_key
 
-# FRONTEND
+# FRONTEND PROTOCOLS
 NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_MAP_TILES=https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
 ```
 
 ---
 
-## 🌍 Contribution & Sovereignty
+## 🗺️ Future Roadmap & Cultural Growth
 
-Heritage-X is an open-initiative designed for the preservation of Indian Cultural Intelligence.
+1. **Manuscript Neural Scanner**: Implementation of OCR nodes to digitize handwritten Sanskrit/Pali manuscripts in real-time.
+2. **Heritage Blockchain**: Using decentralized ledgers to verify the authenticity of cultural artifacts.
+3. **AR Field Guides**: A standalone mobile app built on the Heritage-X protocol for on-site immersion.
+4. **Autonomous Guide Hub**: AI-driven digital guides available for 500+ monuments via voice synthesis.
 
-- **Submit Artifacts**: Use the Digital Repository uplink.
-- **Report Inaccuracies**: Use the "Sovereign Asset Terminal" contact node.
-- **Developer Guidelines**: Follow the 12-column grid and cinematic card design patterns.
+---
 
-**"Preserve. Digitizate. Visualize."**
+## 🌍 Contribution & Sovereignty Guidelines
+
+Heritage-X is an open-initiative.
+
+- **Code Standards**: Maintain the 12-column grid and follow the `Atomic Design` pattern.
+- **Asset Integrity**: All contributed photos must have geotags for district-level mapping.
+- **Language Nodes**: Community members are encouraged to add regional dialect support to the Neural Translator.
+
+---
+
+## 📖 Glossary of Neural Heritage
+
+- **Matrix**: A high-density data grid (e.g., V-Museum Matrix).
+- **Node**: A single point of data, often a monument, hero, or food item.
+- **Vector**: A directional path of movement (e.g., Freedom Vector, Spice Route Vector).
+- **Pulse**: A one-day travel summary or quick AI insight.
+- **Sovereign Guide**: The Prince AI persona instructed to prioritize cultural integrity.
+
+---
+
+**"Preserve. Digitizate. Visualize."**  
 © 2026 Heritage-X Research Group. All Rights Reserved.  
-_In collaboration with Ministry of Culture Inspired Patterns._
+_Digitizing the soul of a subcontinent at 8.4B polygons per second._
