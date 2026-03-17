@@ -3,17 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import os, base64, re, json
-from sqlalchemy.orm import Session
 from datetime import datetime
+from typing import Optional, List
 
-# Import database and models
-from database import get_db, get_mongo, Base, engine
-from models import User, HeritageSite, Monument, Booking, Payment
-
-from typing import Optional
-
-# Auto-create all tables on startup
-Base.metadata.create_all(bind=engine)
+# Import database and models (Pydantic models)
+from database import get_db
+import models
 
 app = FastAPI(
     title="HERITAGE-X API",
@@ -105,74 +100,205 @@ class AuthRequest(BaseModel):
     password: str
 
 @app.post("/api/auth/login")
-def login(req: AuthRequest, db: Session = Depends(get_db)):
-    mongo_db = get_mongo()
-
+def login(req: AuthRequest, db = Depends(get_db)):
     if not req.email or not req.password:
         raise HTTPException(status_code=400, detail="Email and password are required.")
 
-    try:
-        user = db.query(User).filter(User.email == req.email).first()
-        if not user:
-            user = User(
-                email=req.email,
-                name="Heritage Explorer",
-                role="admin",
-                subscription_plan="enterprise"
-            )
-            db.add(user)
-            db.commit()
-            db.refresh(user)
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    user = db.users.find_one({"email": req.email})
+    if not user or user.get("password") != req.password:
+        raise HTTPException(status_code=401, detail="Invalid email or password.")
 
-    # MongoDB audit log (non-blocking)
-    if mongo_db is not None:
-        try:
-            mongo_db["audit_logs"].insert_one({
-                "event": "login",
-                "email": req.email,
-                "timestamp": datetime.utcnow(),
-                "status": "success"
-            })
-        except Exception:
-            pass  # Non-critical
+    # MongoDB audit log
+    db.audit_logs.insert_one({
+        "event": "login",
+        "email": req.email,
+        "timestamp": datetime.utcnow(),
+        "status": "success"
+    })
 
     return {
         "status": "success",
         "message": "Access granted. Welcome to Heritage-X.",
-        "user": {"email": user.email, "name": user.name, "role": user.role}
+        "user": {"email": user["email"], "name": user["name"], "role": user.get("role", "user")}
     }
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+@app.post("/api/auth/forgot-password")
+async def forgot_password(req: ForgotPasswordRequest, db = Depends(get_db)):
+    user = db.users.find_one({"email": req.email})
+    if not user:
+        return {"status": "success", "message": "If this email is registered, a reset link will be sent."}
+
+    import secrets
+    from datetime import datetime, timedelta
+    
+    token = secrets.token_urlsafe(32)
+    db.users.update_one(
+        {"email": req.email},
+        {"$set": {
+            "reset_token": token,
+            "token_expiry": datetime.utcnow() + timedelta(hours=1)
+        }}
+    )
+
+    # SMTP Integration
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+    from urllib.parse import urlparse
+
+    smtp_url = os.getenv("GMAIL_SMTP_URL")
+    if not smtp_url:
+        return {"status": "error", "message": "SMTP not configured."}
+
+    # Robust parsing for complex URLs with special characters (e.g. @ or # in credentials)
+    try:
+        if "://" in smtp_url:
+            main_part = smtp_url.split("://", 1)[1]
+            auth_part, host_part = main_part.rsplit("@", 1)
+            smtp_user, smtp_password = auth_part.split(":", 1)
+            smtp_server, port_str = host_part.split(":", 1)
+            smtp_port = int(port_str)
+        else:
+            raise Exception("Invalid protocol")
+    except Exception:
+        from urllib.parse import urlparse
+        parsed_url = urlparse(smtp_url)
+        smtp_server = parsed_url.hostname
+        smtp_port = parsed_url.port or 587
+        smtp_user = parsed_url.username
+        smtp_password = parsed_url.password
+
+    if not smtp_server or not smtp_user:
+        return {"status": "error", "message": "SMTP configuration is incomplete."}
+
+    reset_link = f"http://localhost:3000/reset-password?token={token}"
+    
+    try:
+        print(f"DEBUG: Attempting SMTP connection to {smtp_server}:{smtp_port} for user {smtp_user}...")
+        
+        msg = MIMEMultipart()
+        msg['From'] = smtp_user
+        msg['To'] = req.email
+        msg['Subject'] = "Heritage-X Password Reset"
+        
+        body = f"Click the link to reset your password: {reset_link}\nThis link will expire in 1 hour."
+        msg.attach(MIMEText(body, 'plain'))
+
+        server = smtplib.SMTP(smtp_server, smtp_port, timeout=15)
+        server.ehlo()
+        server.starttls()
+        server.ehlo()
+        server.login(smtp_user, smtp_password)
+        server.send_message(msg)
+        server.quit()
+
+        return {"status": "success", "message": "Reset link sent to your email."}
+    except Exception as e:
+        print(f"SMTP Error: {str(e)}")
+        return {"status": "error", "message": "Failed to send email."}
+
+@app.post("/api/auth/reset-password")
+def reset_password(req: ResetPasswordRequest, db = Depends(get_db)):
+    user = db.users.find_one({"reset_token": req.token})
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid token.")
+
+    expiry = user.get("token_expiry")
+    if expiry and expiry < datetime.utcnow():
+        raise HTTPException(status_code=400, detail="Expired token.")
+
+    db.users.update_one(
+        {"_id": user["_id"]},
+        {"$set": {
+            "password": req.new_password,
+            "reset_token": None,
+            "token_expiry": None
+        }}
+    )
+
+    return {"status": "success", "message": "Password updated successfully."}
+
+
+class SignupRequest(BaseModel):
+    name: str
+    email: str
+    password: str
+
+@app.post("/api/auth/signup")
+def signup(req: SignupRequest, db = Depends(get_db)):
+    if not req.email or not req.password or not req.name:
+        raise HTTPException(status_code=400, detail="All fields are required.")
+
+    existing_user = db.users.find_one({"email": req.email})
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered.")
+        
+    user_doc = {
+        "email": req.email,
+        "name": req.name,
+        "password": req.password,
+        "role": "user",
+        "subscription_plan": "free",
+        "created_at": datetime.utcnow()
+    }
+    db.users.insert_one(user_doc)
+
+    db.audit_logs.insert_one({
+        "event": "signup",
+        "email": req.email,
+        "timestamp": datetime.utcnow(),
+        "status": "success"
+    })
+
+    return {
+        "status": "success",
+        "message": "Account created successfully.",
+        "user": {"email": req.email, "name": req.name, "role": "user"}
+    }
+
+
+@app.get("/api/stats/user-count")
+def get_user_count(db = Depends(get_db)):
+    try:
+        count = db.users.count_documents({})
+        return {"count": max(count, 1)} # Ensure at least 1 for UI
+    except Exception as e:
+        return {"count": 1, "error": str(e)}
 
 class LogoutRequest(BaseModel):
     email: str
 
 @app.post("/api/auth/logout")
-def logout(req: LogoutRequest):
-    mongo_db = get_mongo()
-    if mongo_db is not None:
-        try:
-            mongo_db["audit_logs"].insert_one({
-                "event": "logout",
-                "email": req.email,
-                "timestamp": datetime.utcnow(),
-                "status": "success"
-            })
-        except Exception:
-            pass
+def logout(req: LogoutRequest, db = Depends(get_db)):
+    try:
+        db.audit_logs.insert_one({
+            "event": "logout",
+            "email": req.email,
+            "timestamp": datetime.utcnow(),
+            "status": "success"
+        })
+    except Exception:
+        pass
     return {"status": "success", "message": "Session terminated."}
+
 
 # ─── Monuments ───────────────────────────────────────────────────────────────
 
 @app.get("/api/monuments")
-def get_monuments(db: Session = Depends(get_db)):
+def get_monuments(db = Depends(get_db)):
     try:
-        monuments = db.query(Monument).all()
-        return {"monuments": [
-            {"id": m.id, "name": m.name, "location": m.location, "description": m.description}
-            for m in monuments
-        ]}
+        monuments = list(db.monuments.find({}, {"_id": 0}))
+        if not monuments:
+             raise Exception("No monuments in DB")
+        return {"monuments": monuments}
+
     except Exception:
         # Return hardcoded data if DB fails
         return {"monuments": [
@@ -201,55 +327,37 @@ class BookingRequest(BaseModel):
     payment_method: Optional[str] = None
 
 @app.post("/api/booking/create")
-def create_booking(req: BookingRequest, db: Session = Depends(get_db)):
-    mongo_db = get_mongo()
-
+def create_booking(req: BookingRequest, db = Depends(get_db)):
     try:
-        new_booking = Booking(
-            user_email=req.user_email,
-            monument_id=req.monument_id,
-            booking_type=req.booking_type,
-            user_location=req.location,
-            payment_method=req.payment_method,
-            status="confirmed"
-        )
-        db.add(new_booking)
-        db.commit()
-        db.refresh(new_booking)
+        booking_doc = {
+            "user_email": req.user_email,
+            "monument_id": req.monument_id,
+            "booking_type": req.booking_type,
+            "user_location": req.location,
+            "payment_method": req.payment_method,
+            "status": "confirmed",
+            "created_at": datetime.utcnow()
+        }
+        booking_result = db.bookings.insert_one(booking_doc)
+        booking_id = str(booking_result.inserted_id)
 
-        new_payment = Payment(
-            booking_id=new_booking.id,
-            amount=req.amount,
-            status="completed"
-        )
-        db.add(new_payment)
-        db.commit()
-        db.refresh(new_payment)
+        payment_doc = {
+            "booking_id": booking_id,
+            "amount": req.amount,
+            "currency": "USD",
+            "status": "completed",
+            "timestamp": datetime.utcnow()
+        }
+        db.payments.insert_one(payment_doc)
+
+        return {
+            "status": "success",
+            "booking_id": booking_id,
+            "message": f"Pass confirmed! Booking #{booking_id} secured in Heritage-X Vault."
+        }
     except Exception as e:
-        db.rollback()
         raise HTTPException(status_code=500, detail=f"Booking failed: {str(e)}")
 
-    # MongoDB sync (non-blocking)
-    if mongo_db is not None:
-        try:
-            mongo_db["bookings_records"].insert_one({
-                "booking_id": new_booking.id,
-                "user_email": req.user_email,
-                "monument_id": req.monument_id,
-                "booking_type": req.booking_type,
-                "amount": req.amount,
-                "status": "confirmed",
-                "timestamp": datetime.utcnow(),
-                "synced_from_pg": True
-            })
-        except Exception:
-            pass
-
-    return {
-        "status": "success",
-        "booking_id": new_booking.id,
-        "message": f"Pass confirmed! Booking #{new_booking.id} synced to PostgreSQL & MongoDB."
-    }
 
 # ─── Monument Image Identification (Gemini Vision) ───────────────────────────
 

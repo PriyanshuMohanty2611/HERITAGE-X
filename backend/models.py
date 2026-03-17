@@ -1,79 +1,64 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
-from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship
-from database import Base
+from pydantic import BaseModel, Field, EmailStr
+from typing import Optional, List
+from datetime import datetime
 
-class User(Base):
-    __tablename__ = "users"
+# ─── User Models ───────────────────────────────────────────────────────────
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    email = Column(String, unique=True, index=True)
-    role = Column(String, default="user") # admin, researcher, tourist
-    subscription_plan = Column(String, default="free")
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+class UserBase(BaseModel):
+    name: str = Field(..., description="Full name of the user")
+    email: EmailStr = Field(..., description="Unique email address")
+    role: str = Field("user", description="Role: admin, researcher, tourist")
+    subscription_plan: str = Field("free", description="Subscription plan")
 
-class HeritageSite(Base):
-    __tablename__ = "heritage_sites"
+class User(UserBase):
+    password: str
+    reset_token: Optional[str] = None
+    token_expiry: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    country = Column(String)
-    location_lat = Column(Float)
-    location_long = Column(Float)
-    era = Column(String)
-    architecture_style = Column(String)
-    heritage_type = Column(String)
-    description = Column(String)
-    health_score = Column(Float)
+# ─── Heritage Management ────────────────────────────────────────────────────
 
-    monuments = relationship("Monument", back_populates="site")
+class HeritageSite(BaseModel):
+    name: str
+    country: str
+    location_lat: float
+    location_long: float
+    era: str
+    architecture_style: str
+    heritage_type: str
+    description: str
+    health_score: float
 
-class Monument(Base):
-    __tablename__ = "monuments"
+class Monument(BaseModel):
+    site_id: Optional[str] = None  # MongoDB ObjectId string
+    name: str
+    construction_year: str
+    architectural_style: str
+    material: str
+    current_condition: str
 
-    id = Column(Integer, primary_key=True, index=True)
-    site_id = Column(Integer, index=True, nullable=True)
-    name = Column(String, index=True)
-    construction_year = Column(String)
-    architectural_style = Column(String)
-    material = Column(String)
-    current_condition = Column(String)
+class SensorData(BaseModel):
+    monument_id: str
+    temperature: float
+    humidity: float
+    pollution: float
+    vibration: float
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
 
-    site = relationship("HeritageSite", back_populates="monuments")
-    sensor_data = relationship("SensorData", back_populates="monument")
+# ─── Transactional ──────────────────────────────────────────────────────────
 
-class SensorData(Base):
-    __tablename__ = "sensor_data"
+class Booking(BaseModel):
+    user_email: str
+    monument_id: Optional[str] = None
+    booking_type: str  # virtual, physical
+    user_location: str
+    payment_method: str
+    status: str = "confirmed"
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
-    id = Column(Integer, primary_key=True, index=True)
-    monument_id = Column(Integer, ForeignKey("monuments.id"))
-    temperature = Column(Float)
-    humidity = Column(Float)
-    pollution = Column(Float)
-    vibration = Column(Float)
-    timestamp = Column(DateTime(timezone=True), server_default=func.now())
-
-    monument = relationship("Monument", back_populates="sensor_data")
-
-class Booking(Base):
-    __tablename__ = "bookings"
-
-    id = Column(Integer, primary_key=True, index=True)
-    user_email = Column(String, index=True)
-    monument_id = Column(Integer, index=True, nullable=True)
-    booking_type = Column(String) # virtual, physical
-    user_location = Column(String)
-    payment_method = Column(String)
-    status = Column(String, default="confirmed")
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    
-class Payment(Base):
-    __tablename__ = "payments"
-
-    id = Column(Integer, primary_key=True, index=True)
-    booking_id = Column(Integer, ForeignKey("bookings.id"))
-    amount = Column(Float)
-    currency = Column(String, default="USD")
-    status = Column(String, default="completed")
-    timestamp = Column(DateTime(timezone=True), server_default=func.now())
+class Payment(BaseModel):
+    booking_id: str
+    amount: float
+    currency: str = "USD"
+    status: str = "completed"
+    timestamp: datetime = Field(default_factory=datetime.utcnow)

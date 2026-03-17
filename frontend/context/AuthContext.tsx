@@ -12,13 +12,13 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
-  login: () => {},
-  logout: () => {},
+  login: () => { },
+  logout: () => { },
   isLoading: true,
 });
 
 // Pages that don't require auth
-const PUBLIC_ROUTES = ["/login"];
+const PUBLIC_ROUTES = ["/login", "/signup", "/forgot-password", "/reset-password"];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<string | null>(null);
@@ -50,14 +50,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = (email: string) => {
     try {
       localStorage.setItem("hx_user_email", email);
-    } catch {}
+    } catch { }
     setUser(email);
   };
 
   const logout = () => {
     try {
       localStorage.removeItem("hx_user_email");
-    } catch {}
+    } catch { }
     setUser(null);
     router.replace("/login");
   };

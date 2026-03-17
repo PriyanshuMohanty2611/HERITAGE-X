@@ -3,6 +3,7 @@
 import { Hexagon, Lock, Mail, ArrowRight, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "../../context/AuthContext";
 
 export default function LoginPage() {
@@ -92,7 +93,10 @@ export default function LoginPage() {
             <label className="flex items-center gap-2 text-xs cursor-pointer" style={{ color: "var(--text-muted)" }}>
               <input type="checkbox" className="accent-blue-600" /> Remember me
             </label>
-            <a href="#" className="text-xs font-bold text-blue-600">Forgot password?</a>
+            <Link href="/forgot-password" title="Forgot Password"
+              className="text-xs font-bold text-blue-600 transition-all hover:opacity-80">
+              Forgot password?
+            </Link>
           </div>
 
           <button type="submit" disabled={isLoading}
@@ -103,12 +107,10 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-6 text-center pt-5" style={{ borderTop: "1px solid var(--card-border)" }}>
-          <p className="text-xs mb-3" style={{ color: "var(--text-muted)" }}>No backend? Use demo access</p>
-          <button onClick={() => { login("demo@heritage-x.com"); router.push("/"); }}
-            className="text-blue-600 text-xs font-bold tracking-widest uppercase px-5 py-2.5 rounded-lg transition-all"
-            style={{ border: "1px solid #bfdbfe", background: "#eff6ff" }}>
-            Quick Demo Access →
-          </button>
+          <p className="text-xs mb-3" style={{ color: "var(--text-muted)" }}>Don't have an account?</p>
+          <Link href="/signup" className="text-blue-600 text-xs font-bold tracking-widest uppercase block">
+            Create Personnel Account →
+          </Link>
         </div>
       </div>
     </main>
