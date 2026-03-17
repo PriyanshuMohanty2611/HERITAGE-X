@@ -346,7 +346,6 @@ def create_booking(req: BookingRequest, db = Depends(get_db)):
             "amount": req.amount,
             "currency": "USD",
             "status": "completed",
-            "timestamp": datetime.utcnow()
         }
         db.payments.insert_one(payment_doc)
 
@@ -358,6 +357,64 @@ def create_booking(req: BookingRequest, db = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Booking failed: {str(e)}")
 
+# ─── New Heritage Endpoints ───────────────────────────────────────────────────
+
+class BookingCreate(BaseModel):
+    username: str
+    monument_name: str
+    date: str
+    time: str
+    type: str
+    total_price: float
+
+@app.post("/api/booking/create")
+async def create_booking(req: BookingCreate, db = Depends(get_db)):
+    try:
+        booking_doc = {
+            "booking_id": f"HB-{datetime.now().strftime('%Y%m%d%H%M%S')}",
+            "username": req.username,
+            "monument": req.monument_name,
+            "date": req.date,
+            "time": req.time,
+            "type": req.type,
+            "price": req.total_price,
+            "status": "Confirmed",
+            "created_at": datetime.utcnow()
+        }
+        db.bookings.insert_one(booking_doc)
+        return {"status": "success", "booking_id": booking_doc["booking_id"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/monuments")
+async def get_monuments(db = Depends(get_db)):
+    try:
+        monuments = list(db.monuments.find({}, {"_id": 0}))
+        # If DB is empty, return a default set for demo
+        if not monuments:
+             return [
+                {
+                  "id": "1",
+                  "name": "Konark Sun Temple",
+                  "image": "/assets/KONARK/konark_hero.png",
+                  "desc": "13th-century CE Sun Temple at Konark, Odisha, India.",
+                  "coords": {"lat": 19.8876, "lng": 86.0945},
+                  "bestTime": "06:00 AM - 10:00 AM",
+                  "architecture": "Kalinga Style",
+                  "history": "Built by King Narasimhadeva I of the Eastern Ganga Dynasty in 1250 CE.",
+                  "videoId": "G_asU6y9b-4",
+                  "query": "Konark+Sun+Temple",
+                  "gallery": ["/assets/KONARK/download (1).jpg", "/assets/KONARK/download (2).jpg"],
+                  "facts": ["Designed as a giant chariot with 24 wheels.", "The temple is oriented so that the first rays of the sun strike the main entrance."],
+                  "foodIntel": [
+                    {"item": "Odia Thali", "spot": "Dalma Restaurant", "price": "₹250"},
+                    {"item": "Chhena Poda", "spot": "Local Market", "price": "₹100"}
+                  ]
+                }
+             ]
+        return monuments
+    except Exception as e:
+        return []
 
 # ─── Monument Image Identification (Gemini Vision) ───────────────────────────
 
