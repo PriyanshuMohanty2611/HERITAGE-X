@@ -1,351 +1,252 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-  Activity,
-  AlertTriangle,
-  Droplets,
-  Gauge,
-  Shield,
-  ShieldAlert,
-  Thermometer,
-  Wind,
-  RefreshCcw,
-  Clock,
-  Radio,
-  AlertOctagon,
-  Factory,
-  ClipboardList,
+import { useState, useEffect } from "react";
+import { 
+  Wind, ShieldAlert, Activity, Thermometer, 
+  Droplets, Waves, ArrowLeft, Wifi, Zap, 
+  ChevronRight, BrainCircuit, ShieldCheck,
+  Target, Globe
 } from "lucide-react";
+import Link from "next/link";
 import { Sidebar } from "../../components/Sidebar";
 import { TopHeader } from "../../components/TopHeader";
-import { Footer } from "../../components/Footer";
 
-type SensorReading = {
-  label: string;
-  value: number;
-  unit: string;
-  status: "ok" | "warn" | "alert";
-  source: string;
-  change: string;
-  color: string;
-  max?: number;
-};
+const SensorNode = ({ label, hardware, value, unit, purpose, status, icon: Icon }: any) => (
+  <div className="group bg-white/60 backdrop-blur-xl border border-slate-100 p-8 rounded-4xl transition-all hover:shadow-2xl hover:scale-[1.02] flex flex-col justify-between h-full shadow-sm hover:border-blue-500/20">
+    <div>
+      <div className="flex justify-between items-start mb-6">
+        <div className="p-4 bg-blue-50 rounded-2xl group-hover:bg-blue-600 group-hover:text-white transition-all duration-500">
+           <Icon className="w-6 h-6" />
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100">
+          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest leading-none">
+            {status}
+          </span>
+        </div>
+      </div>
+      
+      <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em] mb-1">
+        {label} <span className="text-blue-400 opacity-50 font-medium lowercase">({hardware})</span>
+      </h4>
+      <div className="flex items-baseline gap-2 mb-6">
+        <span className="text-5xl font-black text-slate-900 tracking-tighter">{value}</span>
+        <span className="text-sm font-black text-blue-600 uppercase italic tracking-widest">{unit}</span>
+      </div>
+    </div>
+    
+    <div className="border-t border-slate-100 pt-6 mt-4">
+      <p className="text-[11px] leading-relaxed text-slate-500 font-bold uppercase tracking-wider">
+        <span className="text-blue-600">STRATEGIC FOCUS:</span> {purpose}
+      </p>
+      <div className="mt-4 flex items-center justify-between text-[8px] font-black text-slate-400 uppercase tracking-[0.2em]">
+         <span>Calibration: v2.4.0</span>
+         <span>Sync: Live</span>
+      </div>
+    </div>
+  </div>
+);
 
-type Incident = {
-  title: string;
-  date: string;
-  type: "accident" | "incident" | "maintenance";
-  desc: string;
-};
+export default function SensorIntelligenceHub() {
+  const [readings, setReadings] = useState({
+    atm: 412,
+    toxic: 0.15,
+    seismic: 0.002,
+    thermal: 28,
+    hydro: 64,
+    sub: 12
+  });
 
-const LIVE_READINGS: SensorReading[] = [
-  {
-    label: "PM2.5 (Delhi)",
-    value: 244,
-    unit: "AQI",
-    status: "warn",
-    source: "CPCB SAFAR bulletin",
-    change: "↑ +12 vs yesterday",
-    color: "bg-orange-500",
-    max: 500,
-  },
-  {
-    label: "Temperature (Safdarjung)",
-    value: 36.4,
-    unit: "°C",
-    status: "warn",
-    source: "IMD METAR 2026-03-16 12:00 IST",
-    change: "↑ +1.3°C vs last 24h",
-    color: "bg-amber-500",
-    max: 50,
-  },
-  {
-    label: "Humidity (Safdarjung)",
-    value: 24,
-    unit: "%",
-    status: "ok",
-    source: "IMD METAR 2026-03-16 12:00 IST",
-    change: "↓ -6% vs morning",
-    color: "bg-sky-500",
-    max: 100,
-  },
-  {
-    label: "Ground Vibration (Qutub)",
-    value: 0.6,
-    unit: "mm/s",
-    status: "ok",
-    source: "ASI seismo baseline (<2.5 mm/s)",
-    change: "Stable",
-    color: "bg-emerald-500",
-    max: 2.5,
-  },
-];
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setReadings(prev => {
+        const nextSeismic = Number((prev.seismic + (Math.random() * 0.0004 - 0.0002)).toFixed(3));
+        
+        // SECURITY ALERT TRIGGER: Red Ripple if vibration exceeds threshold
+        if (nextSeismic > 0.0025) { // Arbitrary "critical" floor for demo
+          window.dispatchEvent(createRedPulse());
+        }
 
-const INCIDENT_LOG: Incident[] = [
-  {
-    title: "Scaffold slip – parapet repair",
-    date: "2025-11-12",
-    type: "accident",
-    desc: "Minor injury (ankle) during scaffold descent at Red Fort façade repaint.",
-  },
-  {
-    title: "Dust exposure exceedance",
-    date: "2026-01-08",
-    type: "incident",
-    desc: "PM2.5 exceeded 300 AQI during sandstone cutting; work paused 2 hrs; N95 mandate reinforced.",
-  },
-  {
-    title: "Seismic micro-tremor survey",
-    date: "2025-09-30",
-    type: "maintenance",
-    desc: "Baseline vibration mapping at Qutub; peak 0.9 mm/s under tourist load—within ASI tolerance.",
-  },
-  {
-    title: "Roof drainage audit",
-    date: "2025-12-05",
-    type: "maintenance",
-    desc: "Cleared blocked gargoyles on Konark north aisle to reduce humidity creep into mandapa.",
-  },
-];
+        return {
+          atm: Number((prev.atm + (Math.random() * 2 - 1)).toFixed(0)),
+          toxic: Number((prev.toxic + (Math.random() * 0.02 - 0.01)).toFixed(2)),
+          seismic: nextSeismic,
+          thermal: Number((prev.thermal + (Math.random() * 0.4 - 0.2)).toFixed(1)),
+          hydro: Number((prev.hydro + (Math.random() * 0.6 - 0.3)).toFixed(1)),
+          sub: Number((prev.sub + (Math.random() * 0.2 - 0.1)).toFixed(1))
+        };
+      });
+    }, 3000);
 
-export default function ConservationHub() {
-  const [time] = useState("12:05 IST");
+    function createRedPulse() {
+      return new CustomEvent("heritage-pulse", { 
+        detail: { color: "rgba(239, 68, 68,", x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight } 
+      });
+    }
 
-  const riskStatus = useMemo(() => {
-    const anyAlert = LIVE_READINGS.some((r) => r.status === "alert");
-    const anyWarn = LIVE_READINGS.some((r) => r.status === "warn");
-    return anyAlert ? "Critical" : anyWarn ? "Caution" : "Stable";
+    return () => clearInterval(interval);
   }, []);
 
+  const sensorData = [
+    {
+      label: "Atmospheric Grid",
+      hardware: "MQ-135 / MG-811",
+      value: readings.atm,
+      unit: "PPM (CO2)",
+      purpose: "Monitoring carbon footprint and air toxicity levels across the solar circuit.",
+      status: "OPTIMIZED",
+      icon: Wind
+    },
+    {
+      label: "Toxic Gas Matrix",
+      hardware: "MQ-7 & MICS-2714",
+      value: readings.toxic,
+      unit: "mg/m³ (CO/NO2)",
+      purpose: "Detecting vehicle emissions and industrial hazardous leaks in the protected zone.",
+      status: "SECURE",
+      icon: ShieldAlert
+    },
+    {
+      label: "Tectonic Shield",
+      hardware: "ADXL-345",
+      value: readings.seismic,
+      unit: "g (Force)",
+      purpose: "Real-time vibration analysis for earthquake early warning and structural safety.",
+      status: "STABLE",
+      icon: Activity
+    },
+    {
+      label: "Climate Sync",
+      hardware: "DHT22 / BME280",
+      value: readings.thermal,
+      unit: "°C",
+      purpose: "Tracking ambient heat signatures for long-term structural integrity monitoring.",
+      status: "NOMINAL",
+      icon: Thermometer
+    },
+    {
+      label: "Moisture Matrix",
+      hardware: "SHT31-D",
+      value: readings.hydro,
+      unit: "%",
+      purpose: "Humidity and condensation tracking for heritage stone preservation protocol.",
+      status: "SYNCED",
+      icon: Droplets
+    },
+    {
+      label: "Ground Stability",
+      hardware: "Capacitive v1.2",
+      value: readings.sub,
+      unit: "%",
+      purpose: "Monitoring soil moisture to prevent architectural sinking and foundation decay.",
+      status: "ACTIVE",
+      icon: Waves
+    }
+  ];
+
   return (
-    <main className="heritage-page-shell flex h-dvh w-screen font-sans overflow-hidden bg-slate-950 text-white relative">
-      <div className="absolute inset-0 z-0 opacity-25 pointer-events-none">
-        <div className="absolute top-0 left-1/5 w-[520px] h-[520px] bg-emerald-500/10 blur-[180px] rounded-full" />
-        <div className="absolute bottom-0 right-1/6 w-[540px] h-[540px] bg-sky-500/10 blur-[180px] rounded-full" />
+    <main className="heritage-page-shell flex h-screen w-screen font-sans overflow-hidden bg-transparent">
+      <style>{`
+        @keyframes breathe {
+          0%, 100% { transform: scale(1) rotate(-5deg); opacity: 0.05; }
+          50% { transform: scale(1.05) rotate(-3deg); opacity: 0.08; }
+        }
+        .animate-breathe {
+          animation: breathe 20s ease-in-out infinite;
+        }
+      `}</style>
+
+      {/* Glassmorphic Background Layer */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <img 
+          src="/assets/KONARK/download.jpg" 
+          className="absolute top-[-10%] right-[-5%] w-[80%] lg:w-[60%] h-auto 
+                     opacity-[0.05] grayscale blur-[2px] rotate-[-5deg] 
+                     animate-breathe"
+          alt="Background Sculpture"
+        />
+        <div className="absolute inset-0 bg-linear-to-tr from-slate-50 via-slate-50/80 to-transparent" />
       </div>
 
       <Sidebar />
       <div className="flex-1 flex flex-col relative z-10 overflow-hidden">
-        <TopHeader />
+        <div className="header-neural h-20 flex items-center justify-between px-6 z-20 shrink-0">
+          <TopHeader />
+        </div>
 
-        <div className="flex-1 overflow-y-auto p-6 lg:p-12 scrollbar-hide">
-          <div className="max-w-[1700px] mx-auto space-y-14 pb-20">
-            <header className="flex flex-col xl:flex-row xl:items-center justify-between gap-10">
-              <div className="flex items-center gap-6">
-                <div className="w-20 h-20 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shadow-2xl">
-                  <Shield className="w-10 h-10 text-emerald-400" />
-                </div>
-                <div>
-                  <h1 className="text-5xl lg:text-7xl font-black uppercase italic tracking-tighter">
-                    Conservation Hub
+        <div className="flex-1 overflow-y-auto p-8 scrollbar-hide relative z-0 neural-content-shell">
+          <div className="max-w-[1600px] mx-auto space-y-12 pb-24">
+            
+            {/* Header Section */}
+            <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-10">
+              <div className="space-y-4">
+                <Link href="/" className="inline-flex items-center gap-2 text-[10px] font-black text-blue-600 uppercase tracking-widest hover:translate-x-[-4px] transition-transform">
+                  <ArrowLeft className="w-3 h-3" /> Back to Terminal
+                </Link>
+                <div className="flex items-center gap-6">
+                  <div className="w-5 h-5 rounded-full bg-blue-600 shadow-[0_0_20px_#2563eb]" />
+                  <h1 className="text-5xl lg:text-7xl font-black italic tracking-tighter uppercase leading-none text-slate-950">
+                    Sensor <span className="text-blue-600">Intelligence</span>
                   </h1>
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.45em] mt-2 ml-1 underline decoration-emerald-400/60 underline-offset-8">
-                    IoT monitoring + labour safety
-                  </p>
                 </div>
+                <p className="text-[12px] text-slate-400 font-black uppercase tracking-[0.5em] flex items-center gap-4">
+                  <div className="w-10 h-[2px] bg-blue-500" />
+                  Sovereign Neural Matrix Monitor
+                </p>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full xl:w-auto">
-                <MiniStat label="Live Nodes" value="62" icon={<Radio className="w-4 h-4" />} />
-                <MiniStat label="Risk Mode" value={riskStatus} icon={<AlertTriangle className="w-4 h-4" />} />
-                <MiniStat label="Last Sync" value={time} icon={<Clock className="w-4 h-4" />} />
-                <MiniStat label="Maintenance Open" value="7" icon={<ClipboardList className="w-4 h-4" />} />
+              <div className="flex items-center gap-6">
+                 <div className="bg-white/70 backdrop-blur-xl border border-white/50 p-6 rounded-4xl flex items-center gap-6 shadow-sm">
+                    <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-xl shadow-blue-500/20">
+                       <Wifi className="w-6 h-6 animate-pulse" />
+                    </div>
+                    <div>
+                       <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Global Sync Status</p>
+                       <p className="text-xl font-black text-slate-950">9 Active Nodes</p>
+                    </div>
+                 </div>
               </div>
             </header>
 
-            <section className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-              <div className="xl:col-span-2 rounded-[32px] border border-white/10 bg-slate-900/70 backdrop-blur-2xl shadow-3xl p-8 space-y-8">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
-                      IoT sensor dashboard
-                    </p>
-                    <h2 className="text-3xl font-black uppercase italic tracking-tight">
-                      Real-time environment
-                    </h2>
-                  </div>
-                  <button className="px-4 py-2 rounded-xl border border-white/10 bg-white/5 text-[11px] font-black uppercase tracking-[0.25em] flex items-center gap-2 hover:border-emerald-400/40 transition-all">
-                    <RefreshCcw className="w-4 h-4" /> Refresh
-                  </button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {LIVE_READINGS.map((r) => (
-                    <SensorCard key={r.label} reading={r} />
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-[32px] border border-white/10 bg-gradient-to-br from-emerald-600/25 via-slate-900/80 to-slate-900/80 p-8 shadow-3xl flex flex-col gap-6">
-                <div className="flex items-center gap-3">
-                  <AlertOctagon className="w-6 h-6 text-emerald-300" />
-                  <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-200">Live alert</p>
-                    <h3 className="text-xl font-black uppercase">Humidity drift under control</h3>
-                  </div>
-                </div>
-                <p className="text-sm text-emerald-50/80 leading-relaxed">
-                  Safdarjung feed shows 24% RH; dehumidifiers at archives remain within ASI safe band (20–60%). Continuous watch on mid-day heat index due to 36.4°C spike.
-                </p>
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-2">
-                  <div className="flex items-center justify-between text-[11px] font-black uppercase tracking-[0.25em] text-slate-200">
-                    <span>Risk Band</span>
-                    <span>Ok</span>
-                  </div>
-                  <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                    <div className="h-full bg-emerald-400 w-[32%]" />
-                  </div>
-                  <p className="text-[10px] text-slate-300">
-                    Source: IMD METAR 2026-03-16 12:00 IST; CPCB SAFAR bulletin (PM2.5 244, Delhi).
-                  </p>
-                </div>
-              </div>
-            </section>
-
-            <section className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-              <div className="xl:col-span-2 rounded-[32px] border border-white/10 bg-slate-900/70 backdrop-blur-2xl shadow-3xl p-8 space-y-8">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
-                      Sensor trendlines
-                    </p>
-                    <h2 className="text-3xl font-black uppercase italic tracking-tight">
-                      24h monitoring window
-                    </h2>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <TrendChart title="Humidity (Safdarjung)" unit="%" color="bg-sky-400" data={[32, 28, 26, 24, 27, 29]} labels={["06h", "08h", "10h", "12h", "14h", "16h"]} />
-                  <TrendChart title="PM2.5 (Delhi)" unit="AQI" color="bg-orange-400" data={[210, 224, 238, 244, 239, 228]} labels={["06h", "08h", "10h", "12h", "14h", "16h"]} />
-                  <TrendChart title="Temperature (°C)" unit="°C" color="bg-amber-400" data={[27, 30, 33, 36.4, 35, 32]} labels={["06h", "08h", "10h", "12h", "14h", "16h"]} />
-                  <TrendChart title="Vibration (mm/s)" unit="mm/s" color="bg-emerald-400" data={[0.4, 0.5, 0.6, 0.6, 0.7, 0.6]} labels={["06h", "08h", "10h", "12h", "14h", "16h"]} />
-                </div>
-              </div>
-
-              <div className="rounded-[32px] border border-white/10 bg-slate-900/80 p-8 shadow-3xl space-y-6">
-                <div className="flex items-center gap-3">
-                  <Factory className="w-6 h-6 text-orange-300" />
-                  <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Labour Safety</p>
-                    <h3 className="text-2xl font-black uppercase italic tracking-tight">Incident Log</h3>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  {INCIDENT_LOG.map((item) => (
-                    <div key={item.title} className="p-4 rounded-2xl border border-white/10 bg-white/5">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.25em] ${item.type === "accident" ? "bg-red-500/15 text-red-300" : item.type === "incident" ? "bg-amber-500/15 text-amber-200" : "bg-emerald-500/15 text-emerald-200"}`}>
-                          {item.type}
-                        </span>
-                        <span className="text-[10px] text-slate-400 font-mono">{item.date}</span>
-                      </div>
-                      <p className="text-sm font-black text-white mt-2">{item.title}</p>
-                      <p className="text-xs text-slate-300 mt-1">{item.desc}</p>
+            {/* Quick Summary Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+               {[
+                 { label: "Stability", val: "99.98", unit: "%", icon: ShieldCheck },
+                 { label: "Signal Latency", val: "12", unit: "ms", icon: Zap },
+                 { label: "Active Guards", val: "24", unit: "Nodes", icon: Target },
+                 { label: "Global Coverage", val: "100", unit: "%", icon: Globe }
+               ].map((stat, i) => (
+                 <div key={i} className="bg-white/60 backdrop-blur-md p-6 rounded-3xl border border-white/40 flex items-center gap-5 shadow-sm">
+                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-blue-600">
+                       <stat.icon className="w-5 h-5" />
                     </div>
-                  ))}
-                </div>
+                    <div>
+                       <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
+                       <p className="text-lg font-black text-slate-950">{stat.val} <span className="text-[10px] text-blue-600">{stat.unit}</span></p>
+                    </div>
+                 </div>
+               ))}
+            </div>
 
-                <div className="rounded-2xl border border-white/10 bg-gradient-to-r from-red-600/20 via-amber-500/20 to-emerald-500/20 p-4 space-y-3">
-                  <div className="flex items-center gap-2">
-                    <ShieldAlert className="w-4 h-4 text-red-300" />
-                    <p className="text-[11px] font-black uppercase tracking-[0.3em] text-white">Safety posture</p>
-                  </div>
-                  <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                    <div className="h-full bg-amber-400 w-[54%]" />
-                  </div>
-                  <p className="text-xs text-slate-200 leading-relaxed">
-                    Reinforce PPE audits; dust exceedance logged on 2026-01-08. Next training: 2026-04-02 (heat & AQI response).
-                  </p>
+            {/* Main Sensor Intelligence Matrix */}
+            <section className="space-y-8">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-3xl font-black uppercase italic tracking-tight text-slate-950">Intelligence Matrix</h2>
+                  <p className="text-slate-500 text-sm mt-1">Real-time hardware telemetry and strategic structural monitoring.</p>
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-load">
+                {sensorData.map((node, i) => (
+                  <SensorNode key={i} {...node} />
+                ))}
               </div>
             </section>
 
-            <Footer />
           </div>
         </div>
       </div>
     </main>
-  );
-}
-
-function MiniStat({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 shadow-2xl flex items-center justify-between gap-3">
-      <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-white">
-        {icon}
-      </div>
-      <div className="text-right">
-        <p className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-400">{label}</p>
-        <p className="text-lg font-black text-white">{value}</p>
-      </div>
-    </div>
-  );
-}
-
-function SensorCard({ reading }: { reading: SensorReading }) {
-  const width = reading.max ? Math.min(100, (reading.value / reading.max) * 100) : 100;
-  const statusColor =
-    reading.status === "alert" ? "text-red-400" : reading.status === "warn" ? "text-amber-400" : "text-emerald-400";
-
-  return (
-    <div className="p-5 rounded-2xl border border-white/10 bg-white/5 space-y-3 shadow-2xl">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className={`w-3 h-3 rounded-full ${reading.status === "alert" ? "bg-red-400" : reading.status === "warn" ? "bg-amber-400" : "bg-emerald-400"} animate-pulse`} />
-          <p className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-300">{reading.label}</p>
-        </div>
-        {reading.unit.includes("AQI") ? <Wind className="w-4 h-4 text-orange-300" /> : reading.unit.includes("%") ? <Droplets className="w-4 h-4 text-sky-300" /> : reading.unit.includes("°") ? <Thermometer className="w-4 h-4 text-amber-300" /> : <Activity className="w-4 h-4 text-emerald-300" />}
-      </div>
-      <div className="flex items-center gap-3">
-        <p className="text-3xl font-black text-white">{reading.value}</p>
-        <p className="text-sm font-black text-slate-500 uppercase tracking-[0.2em]">{reading.unit}</p>
-      </div>
-      <p className={`text-[11px] font-black uppercase tracking-[0.2em] ${statusColor}`}>{reading.change}</p>
-      <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-        <div className={`h-full rounded-full ${reading.color}`} style={{ width: `${width}%` }} />
-      </div>
-      <p className="text-[10px] text-slate-400">Source: {reading.source}</p>
-    </div>
-  );
-}
-
-function TrendChart({
-  title,
-  unit,
-  color,
-  data,
-  labels,
-}: {
-  title: string;
-  unit: string;
-  color: string;
-  data: number[];
-  labels: string[];
-}) {
-  const max = Math.max(...data);
-  return (
-    <div className="p-5 rounded-2xl border border-white/10 bg-white/5 shadow-2xl space-y-3">
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-black uppercase tracking-[0.2em] text-white">{title}</p>
-        <Gauge className="w-5 h-5 text-slate-400" />
-      </div>
-      <div className="grid grid-cols-6 gap-2 items-end h-32">
-        {data.map((v, i) => (
-          <div key={labels[i]} className="flex flex-col items-center gap-1">
-            <div className="w-full rounded-full bg-white/10 overflow-hidden h-full flex items-end">
-              <div className={`${color}`} style={{ width: "100%", height: `${(v / max) * 100}%` }} />
-            </div>
-            <span className="text-[10px] text-slate-500">{labels[i]}</span>
-          </div>
-        ))}
-      </div>
-      <div className="flex items-center justify-between text-[11px] text-slate-400">
-        <span>Peak: {max} {unit}</span>
-        <span>Unit: {unit}</span>
-      </div>
-    </div>
   );
 }

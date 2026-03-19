@@ -6,103 +6,121 @@ import {
   Loader2, TrendingUp, Shield, Zap, Eye, Clock, AlertTriangle,
   CheckCircle2, Wifi, RefreshCw, ChevronRight, MapPin, Star,
   ArrowRight, User, Users, Calendar, Thermometer, Droplets,
-  Wind, ZapOff, Plane
+  Wind, ZapOff, Plane, Ticket, ScanSearch, Sun, Move, CloudFog, Compass
 } from "lucide-react";
 import { Sidebar } from "../components/Sidebar";
 import { TopHeader } from "../components/TopHeader";
+import Link from "next/link";
 
-// ─── Utility: Animated Counter ───────────────────────────────────
-function AnimatedCounter({ value, duration = 2000, suffix = "" }: { value: number, duration?: number, suffix?: string }) {
-  const [count, setCount] = useState(value);
-  const prevValue = useRef(value);
-
-  useEffect(() => {
-    let start = prevValue.current;
-    const end = value;
-    const range = end - start;
-    let startTime: number | null = null;
-
-    if (range === 0) return;
-
-    const step = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      setCount(Math.floor(progress * range + start));
-      if (progress < 1) {
-        window.requestAnimationFrame(step);
-      }
-    };
-
-    window.requestAnimationFrame(step);
-    prevValue.current = value;
-  }, [value, duration]);
-
-  return <span>{count.toLocaleString()}{suffix}</span>;
+// ─── Utility: Static Counter ────────────────────────────────────
+function StaticCounter({ value, suffix = "" }: { value: number, suffix?: string }) {
+  return <span>{value.toLocaleString()}{suffix}</span>;
 }
 
 // ─── Component: Live Stat Card ───────────────────────────────────
-const StatCard = memo(({ icon: Icon, label, value, trend, color, suffix }: any) => (
-  <div className="group relative bg-[#0a1120] border border-white/5 rounded-[2rem] p-6 overflow-hidden transition-all hover:border-blue-500/50 hover:bg-slate-900/40">
-    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-      <Icon className="w-24 h-24" />
-    </div>
-    <div className="flex items-start justify-between mb-4">
-      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center`} style={{ background: `${color}15`, border: `1px solid ${color}30` }}>
-        <Icon className="w-6 h-6" style={{ color }} />
+const StatCard = memo(({ icon: Icon, label, value, trend, color, suffix, isPrimary }: any) => {
+  return (
+    <div className={`group relative p-8 rounded-[2.5rem] transition-all duration-300 overflow-hidden ${
+      isPrimary 
+      ? 'bg-blue-600 shadow-xl' 
+      : 'bg-transparent border border-slate-100 shadow-lg'
+    }`}>
+      <div className="flex flex-col justify-between h-full space-y-4 relative z-10">
+        <div className="flex justify-between items-start">
+          <p className={`text-[10px] font-black uppercase tracking-widest ${isPrimary ? 'text-blue-100' : 'text-slate-400'}`}>
+            {label}
+          </p>
+          <div className={`p-2 rounded-lg ${isPrimary ? 'bg-white/10' : 'bg-blue-50'}`}>
+            <Icon className={`w-4 h-4 ${isPrimary ? 'text-white' : 'text-blue-600'}`} />
+          </div>
+        </div>
+        <div>
+          <h3 className={`text-5xl font-black leading-none tracking-tighter italic ${isPrimary ? 'text-white' : 'text-slate-950'}`}>
+            <StaticCounter value={value} suffix={suffix} />
+          </h3>
+          <div className={`inline-flex items-center gap-1.5 mt-3 text-[10px] font-bold ${
+            trend.startsWith('+') 
+            ? (isPrimary ? 'text-blue-100' : 'text-emerald-600') 
+            : (isPrimary ? 'text-blue-200' : 'text-red-500')
+          }`}>
+            {trend.startsWith('+') ? <TrendingUp className="w-3 h-3" /> : <AlertTriangle className="w-3 h-3" />}
+            {trend} phase shift
+          </div>
+        </div>
       </div>
-      <div className={`px-3 py-1 rounded-full text-[10px] font-black tracking-widest flex items-center gap-1.5 ${trend.startsWith('+') ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
-        <TrendingUp className="w-3 h-3" /> {trend}
-      </div>
     </div>
-    <div className="relative z-10">
-      <h3 className="text-3xl font-black text-white leading-none mb-1">
-        <AnimatedCounter value={value} suffix={suffix} />
-      </h3>
-      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">{label}</p>
-    </div>
-  </div>
-));
+  );
+});
 
 StatCard.displayName = "StatCard";
 
-// ─── Component: IoT Sensor Hub ──────────────────────────────────
-function IoTSensorHub() {
-  const sensors = [
-    { label: "Humidity", val: 64, icon: Droplets, color: "#3b82f6", unit: "%" },
-    { label: "Pollution", val: 42, icon: Wind, color: "#f59e0b", unit: " AQI" },
-    { label: "Vibration", val: 0.2, icon: Activity, color: "#ef4444", unit: " mm/s" },
-    { label: "Luminosity", val: 850, icon: Zap, color: "#a855f7", unit: " Lux" }
+// ─── Component: IoT Neural Grid (Static Fix) ─────────────────────
+function IoTNeuralGridStatic() {
+  const sensorData = [
+    { name: "Pollution Grid", purpose: "Air Toxicity (CO/NO2) near Konark Ruins", value: "42 AQI", limit: "<50 AQI", icon: Wind },
+    { name: "Carbon Matrix", purpose: "Tectonic Impact on Sun Temple Foundation", value: "412 PPM", limit: "<450 PPM", icon: CloudFog },
+    { name: "Structural Pulse", purpose: "Real-time Vibration (ADXL) Analysis", value: "0.002g", limit: "<0.01g", icon: Activity },
+    { name: "Neural Pitch", purpose: "Angular Balance & Structural Orientation", value: "0.01°", limit: "<0.1°", icon: Compass },
+    { name: "Thermal Matrix", purpose: "Surface Temp Variation (Taj Marble)", value: "28.4°C", limit: "<35°C", icon: Thermometer },
+    { name: "UV Exposure", purpose: "Solar Decay Tracker (Konark Sculptures)", value: "2 Index", limit: "<4 Index", icon: Sun }
   ];
 
   return (
-    <div className="card p-8 bg-[#0a1120] border border-white/5 rounded-[2.5rem] h-full">
+    <div className="bg-transparent border border-slate-100 p-8 rounded-[2.5rem] shadow-lg h-full">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h3 className="text-xl font-black text-white uppercase italic tracking-tight">IoT Neural Grid</h3>
-          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Live Sensor Synchrony</p>
+          <h2 className="text-[13px] font-black uppercase tracking-[0.2em] text-slate-400">
+            IOT NEURAL GRID
+          </h2>
+          <p className="text-[11px] font-black text-blue-600 uppercase tracking-tight mt-1">
+            STATISTIC INTELLIGENCE MATRIX
+          </p>
         </div>
-        <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
-          <Wifi className="w-5 h-5 text-blue-500 animate-pulse" />
+        <div className="p-3 bg-blue-50 text-blue-600 border border-blue-100 rounded-2xl">
+          <Wifi size={16} strokeWidth={3} />
         </div>
       </div>
-      <div className="space-y-6">
-        {sensors.map(s => (
-          <div key={s.label} className="space-y-2 group">
-            <div className="flex justify-between items-end">
-              <div className="flex items-center gap-3">
-                <s.icon className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
-                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest group-hover:text-slate-300">{s.label}</span>
-              </div>
-              <span className="text-xs font-mono font-bold text-white tracking-widest">{s.val}{s.unit}</span>
-            </div>
-            <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-              <div
-                className="h-full transition-all duration-1000 ease-out"
-                style={{ width: `${Math.min(100, (s.val / 1000) * 100 || s.val)}%`, background: s.color }}
-              />
-            </div>
-          </div>
-        ))}
+      
+      <div className="overflow-x-auto">
+        <table className="w-full text-left">
+          <thead className="border-b border-slate-100">
+            <tr>
+              {["Node", "Sensor Name / Purpose", "Reading", "Threshold"].map(header => (
+                <th key={header} className="text-[9px] font-black uppercase tracking-widest text-slate-500 p-4">
+                  {header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="space-y-4 before:content-[''] before:block before:h-4">
+            {sensorData.map((sensor, i) => (
+              <tr key={i} className="group transition-all duration-300">
+                <td colSpan={4} className="p-0">
+                  <div className="flex items-center bg-transparent border border-slate-100 p-4 rounded-2xl shadow-sm group-hover:shadow-md group-hover:translate-x-1 transition-all mb-3 mx-2">
+                    <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-blue-600 group-hover:text-white shadow-sm transition-all shrink-0">
+                      <sensor.icon size={18} strokeWidth={2.5} />
+                    </div>
+                    
+                    <div className="flex-1 ml-6">
+                      <p className="text-xs font-black text-slate-950 uppercase italic tracking-tighter">{sensor.name}</p>
+                      <p className="text-[9px] text-slate-400 font-bold uppercase tracking-tight mt-0.5">{sensor.purpose}</p>
+                    </div>
+
+                    <div className="px-6 text-center">
+                      <p className="text-xs font-black text-slate-900">{sensor.value}</p>
+                      <p className="text-[8px] font-black text-slate-300 uppercase tracking-widest mt-0.5">Reading</p>
+                    </div>
+
+                    <div className="px-6 text-right">
+                      <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest whitespace-nowrap">{sensor.limit}</p>
+                      <p className="text-[8px] font-black text-slate-300 uppercase tracking-widest mt-0.5">Threshold</p>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -111,110 +129,61 @@ function IoTSensorHub() {
 // ─── Component: Health Monitoring ────────────────────────────────
 function HeritageHealthMonitor() {
   const sites = [
-    { name: "Konark Node", health: 94, status: "Stabilized", color: "#10b981" },
-    { name: "Ajanta Core", health: 82, status: "Critical RH", color: "#ef4444" },
-    { name: "Hampi Grid", health: 91, status: "Optimized", color: "#3b82f6" },
-    { name: "Taj Matrix", health: 88, status: "Air Shield Active", color: "#f59e0b" }
+    { name: "Konark Node", health: 94, status: "Stabilized", color: "#2563eb", img: "/assets/KONARK/download.jpg" },
+    { name: "Ajanta Core", health: 82, status: "Critical RH", color: "#ef4444", img: "/assets/Ajanta Caves/download.jpg" },
+    { name: "Hampi Grid", health: 91, status: "Optimized", color: "#3b82f6", img: "/assets/Hampi Ruins/download.jpg" },
+    { name: "Taj Matrix", health: 88, status: "Air Shield Active", color: "#0ea5e9", img: "/assets/Taj Mahal/download.jpg" }
   ];
 
   return (
-    <div className="card p-8 bg-[#0a1120] border border-white/5 rounded-[2.5rem] h-full flex flex-col">
+    <div className="bg-transparent border border-slate-100 p-8 rounded-[2.5rem] shadow-sm h-full flex flex-col transition-all">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h3 className="text-xl font-black text-white uppercase italic tracking-tight">Health Integrity</h3>
-          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Real-time Structural Health</p>
+          <h3 className="text-xl font-black text-slate-950 uppercase italic tracking-tight">Health Integrity</h3>
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Real-time Structural Health</p>
         </div>
-        <button className="p-3 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/50 transition-all">
+        <button className="p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-blue-500/50 transition-all">
           <RefreshCw className="w-4 h-4 text-slate-400" />
         </button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
         {sites.map(site => (
-          <div key={site.name} className="p-5 rounded-3xl bg-white/5 border border-white/5 flex flex-col justify-between group hover:border-blue-500/30 transition-all">
-            <div className="flex items-start justify-between">
-              <div className="w-2.5 h-2.5 rounded-full mt-1.5" style={{ background: site.color, boxShadow: `0 0 10px ${site.color}` }} />
-              <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">{site.health}%</span>
-            </div>
-            <div className="mt-4">
-              <p className="text-xs font-black text-white uppercase tracking-tight">{site.name}</p>
-              <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">{site.status}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+          <div key={site.name} className="p-6 rounded-4xl bg-transparent border border-slate-200 flex flex-col gap-6 group hover:translate-y-[-4px] hover:shadow-2xl transition-all duration-500 shadow-xl relative overflow-hidden">
+             
+             {/* Gradient Accent */}
+             <div className="absolute top-0 left-0 w-full h-1" style={{ background: site.color }} />
 
-// ─── Component: Live Visitors Chart ──────────────────────────────
-function VisitorFlowChart() {
-  return (
-    <div className="card p-8 bg-[#0a1120] border border-white/5 rounded-[2.5rem] h-full relative overflow-hidden">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h3 className="text-xl font-black text-white uppercase italic tracking-tight">Visitor Dynamics</h3>
-          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Live Flow Density</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-blue-500" />
-            <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">Domestic</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-orange-500" />
-            <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">International</span>
-          </div>
-        </div>
-      </div>
-      <div className="h-48 w-full flex items-end gap-1 px-2">
-        {[20, 35, 45, 30, 55, 70, 65, 80, 45, 60, 85, 95, 80, 100].map((h, i) => (
-          <div key={i} className="flex-1 group relative">
-            <div
-              className="w-full bg-blue-600/40 rounded-t-sm group-hover:bg-blue-500 transition-all duration-500"
-              style={{ height: `${h}%` }}
-            />
-            {i % 4 === 0 && (
-              <span className="absolute -bottom-6 left-0 text-[8px] font-black text-slate-600 uppercase tracking-widest">0{i}:00</span>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+             <div className="flex items-center gap-5">
+              <div className="relative shrink-0">
+                <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-white shadow-md duration-500 ring-4 ring-slate-50">
+                  <img src={site.img} alt={site.name} className="w-full h-full object-cover" />
+                </div>
+                <div 
+                  className="absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-white shadow-[0_0_10px_rgba(0,0,0,0.1)]" 
+                  style={{ background: site.color }}
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                 <p className="text-[12px] font-black text-slate-950 uppercase italic tracking-tight truncate">{site.name}</p>
+                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mt-1">{site.status}</p>
+              </div>
+              <div className="text-right">
+                <span className="text-xl font-black text-slate-950 italic">{site.health}%</span>
+              </div>
+             </div>
 
-// ─── Component: Operations Feed (Events & Bookings) ──────────────
-function OperationsFeed() {
-  const events = [
-    { time: "09:30 AM", label: "Puri Chariot Phase A Sync", type: "RITUAL", status: "LIVE", color: "#f97316" },
-    { time: "11:00 AM", label: "Konark Laser Calibration", type: "MAINTENANCE", status: "PENDING", color: "#3b82f6" },
-    { time: "02:00 PM", label: "Ajanta Humidity Extraction", type: "CRITICAL", status: "AUTO", color: "#ef4444" },
-    { time: "05:15 PM", label: "Hampi Global Stream", type: "EVENT", status: "SCHEDULED", color: "#10b981" }
-  ];
-
-  return (
-    <div className="card p-8 bg-[#0a1120] border border-white/5 rounded-[2.5rem] h-full">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h3 className="text-xl font-black text-white uppercase italic tracking-tight">Active Operations</h3>
-          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Real-time Logistics Queue</p>
-        </div>
-        <Calendar className="w-5 h-5 text-slate-600" />
-      </div>
-      <div className="space-y-4">
-        {events.map((e, i) => (
-          <div key={i} className="group p-5 rounded-[1.5rem] bg-white/5 border border-white/5 hover:border-white/10 transition-all flex items-center gap-5">
-            <div className="w-16 flex flex-col items-center shrink-0">
-              <span className="text-[10px] font-black text-white leading-none mb-1">{e.time.split(' ')[0]}</span>
-              <span className="text-[8px] font-bold text-slate-600 uppercase tracking-widest">{e.time.split(' ')[1]}</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-black text-white uppercase truncate tracking-tight mb-1">{e.label}</p>
-              <p className="text-[8px] font-black uppercase tracking-widest" style={{ color: e.color }}>{e.type}</p>
-            </div>
-            <div className="px-3 py-1 rounded-lg bg-black/40 border border-white/5 shrink-0">
-              <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">{e.status}</span>
-            </div>
+             <div className="space-y-2">
+               <div className="flex justify-between text-[8px] font-black text-slate-400 uppercase tracking-widest">
+                  <span>Structural Integrity</span>
+                  <span>Target: 100%</span>
+               </div>
+               <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden shadow-inner">
+                  <div 
+                    className="h-full rounded-full transition-all duration-1000 ease-out" 
+                    style={{ width: `${site.health}%`, background: site.color }}
+                  />
+               </div>
+             </div>
           </div>
         ))}
       </div>
@@ -224,9 +193,15 @@ function OperationsFeed() {
 
 // ─── Main Dashboard Page ─────────────────────────────────────────
 export default function CommandCenter() {
-  const [livePulse, setPulse] = useState(true);
   const [visitorSeed, setVisitorSeed] = useState(0);
   const [signal, setSignal] = useState(99.98);
+
+  const bgImages = [
+    "/assets/KONARK/download.jpg",
+    "/assets/Taj Mahal/sunrise-at-taj-mahal--agra--uttar-pradash--india-583682538-5b91840bc9e77c0050bdc67b.jpg",
+    "/assets/Hampi Ruins/places-to-visit-in-hampi-FEATURE-compressed.jpg",
+    "/assets/Ajanta Caves/ajanta-caves-5-to-8-3071.jpg"
+  ];
 
   useEffect(() => {
     const fetchUserCount = async () => {
@@ -238,94 +213,69 @@ export default function CommandCenter() {
         console.error("Failed to fetch user count", e);
       }
     };
-
     fetchUserCount();
-
-    const id = setInterval(() => {
-      setPulse(p => !p);
-      setSignal(s => Math.min(100, Math.max(99.5, s + (Math.random() * 0.04 - 0.02))));
-    }, 5000);
-    return () => clearInterval(id);
   }, []);
 
   return (
-    <main className="heritage-page-shell flex h-dvh w-screen overflow-hidden font-sans bg-[#060b18] text-white selection:bg-blue-500/30">
+    <main className="heritage-page-shell flex h-screen w-screen font-sans overflow-hidden relative bg-transparent text-slate-950">
+      
+      {/* Background Decor Layer */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <img 
+          src={bgImages[0]} 
+          className="absolute top-[5%] right-[-5%] w-[50%] lg:w-[40%] h-auto opacity-[0.03] grayscale blur-[20px] rotate-[-5deg]"
+          alt="Background Decor"
+        />
+        <img 
+          src={bgImages[2]} 
+          className="absolute bottom-[5%] left-[-5%] w-[50%] lg:w-[40%] h-auto opacity-[0.03] grayscale blur-[20px] rotate-[5deg]"
+          alt="Background Decor"
+        />
+      </div>
+      
       <Sidebar />
 
-      <div className="flex-1 flex flex-col h-full min-w-0 relative z-10 overflow-hidden">
-        <TopHeader />
+      <div className="flex-1 flex flex-col h-full min-w-0 relative z-10 overflow-hidden neural-content-shell">
+        <div className="header-neural h-20 flex items-center justify-between px-6 z-20 shrink-0 border-b border-slate-50">
+          <TopHeader />
+        </div>
 
         <div className="flex-1 overflow-y-auto scrollbar-hide p-6 lg:p-10 xl:p-14">
-          <div className="max-w-[1700px] mx-auto space-y-12">
-
-            {/* Header Section */}
-            <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-              <div className="space-y-3">
-                <div className="flex items-center gap-4">
-                  <div className={`w-3.5 h-3.5 rounded-full ${livePulse ? 'bg-blue-500 shadow-[0_0_20px_#3b82f6]' : 'bg-blue-900'} transition-all duration-1000`} />
-                  <h1 className="text-4xl lg:text-5xl font-black italic tracking-tighter uppercase leading-none">Command Centre</h1>
-                </div>
-                <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.4em] flex items-center gap-3">
-                  Sovereign Intelligence Stack <ArrowRight className="w-3 h-3 text-blue-500" /> Phase 04 Active <span className="text-blue-600 block w-1 h-1 rounded-full animate-ping" />
-                </p>
+          <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
+            
+            {/* ROW 1: Header & Stability Control */}
+            <div className="flex flex-col justify-center">
+              <h1 className="text-4xl lg:text-5xl font-black uppercase italic tracking-tighter text-slate-950 mb-2 leading-none">Command <span className="text-blue-600">Centre</span></h1>
+              <p className="text-xs font-black text-blue-600 uppercase tracking-[0.4em] flex items-center gap-2">
+                Sovereign Intelligence Dashboard <span className="text-slate-400 font-bold ml-2">v1.2.0-SECURE</span>
+              </p>
+            </div>
+            <div className="flex items-center justify-end gap-6 shrink-0">
+              <div className="px-6 py-4 rounded-3xl bg-slate-50 border border-slate-200 flex flex-col items-end shadow-sm">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">System Signal</span>
+                <span className="text-sm font-mono font-black text-blue-600">{signal.toFixed(2)}% LIVE</span>
               </div>
-              <div className="flex items-center gap-6">
-                <div className="px-8 py-5 rounded-3xl bg-white/5 border border-white/10 flex flex-col items-end backdrop-blur-xl">
-                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 opacity-60">System Stability</span>
-                  <span className="text-sm font-mono font-black text-emerald-400">{signal.toFixed(2)}% LIVE</span>
-                </div>
-                <button className="h-20 px-10 rounded-[2rem] bg-blue-600 border border-blue-400/50 text-white font-black uppercase text-[10px] tracking-[0.2em] hover:bg-blue-500 hover:scale-[1.02] transition-all shadow-2xl shadow-blue-900/40 active:scale-95"> Initialize Neural Scan </button>
-              </div>
-            </header>
-
-            {/* Top Stat Row */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-              <StatCard icon={Users} label="Flow Sync" value={visitorSeed} trend="+12.4%" color="#3b82f6" suffix="" />
-              <StatCard icon={Activity} label="Active Nodes" value={12} trend="+0.0%" color="#10b981" suffix="" />
-              <StatCard icon={Plane} label="Transit Ops" value={342} trend="+8.2%" color="#f59e0b" suffix="" />
-              <StatCard icon={AlertTriangle} label="Anomalies" value={4} trend="-25.0%" color="#ef4444" suffix="" />
+              <button className="h-16 px-8 rounded-2xl bg-blue-600 text-white font-black uppercase text-[10px] tracking-[0.2em] hover:bg-blue-700 transition-all shadow-xl active:scale-95"> 
+                Neural Scan 
+              </button>
             </div>
 
-            {/* Main Interactive Grid */}
-            <div className="grid grid-cols-12 gap-8 items-stretch">
+            {/* Metrics Cluster */}
+            <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 stagger-load">
+              <StatCard isPrimary icon={Users} label="Total Visitors" value={visitorSeed || 12480} trend="+12.4%" color="#3b82f6" suffix="" />
+              <Link href="/sensors" className="block h-full">
+                <StatCard icon={Wifi} label="Active Sensors" value={124} trend="+2.1%" color="#2563eb" suffix="" />
+              </Link>
+              <StatCard icon={MapPin} label="Heritage Nodes" value={32} trend="+1.0%" color="#3b82f6" suffix="" />
+              <StatCard icon={ScanSearch} label="AI Detections" value={433} trend="+8.5%" color="#3b82f6" suffix="" />
+            </div>
 
-              {/* Site Health Monitor: Span 4 */}
-              <div className="col-span-12 lg:col-span-4">
-                <HeritageHealthMonitor />
-              </div>
-
-              {/* Visitor Dynamics Chart: Span 5 */}
-              <div className="col-span-12 lg:col-span-5">
-                <VisitorFlowChart />
-              </div>
-
-              {/* IoT Hub: Span 3 */}
-              <div className="col-span-12 lg:col-span-3">
-                <IoTSensorHub />
-              </div>
-
-              {/* Active Ops / Events: Span 8 */}
-              <div className="col-span-12 lg:col-span-8">
-                <OperationsFeed />
-              </div>
-
-              {/* AI Signal Monitor / Quick Insights: Span 4 */}
-              <div className="col-span-12 lg:col-span-4">
-                <div className="p-10 bg-linear-to-br from-blue-600 to-blue-800 rounded-[2.5rem] relative overflow-hidden group h-full flex flex-col justify-between">
-                  <BrainCircuit className="absolute -right-10 -bottom-10 w-64 h-64 text-white/5 group-hover:rotate-12 transition-transform duration-1000" />
-                  <div>
-                    <h4 className="text-2xl font-black text-white italic tracking-tight mb-2">Neural Insight Dashboard</h4>
-                    <p className="text-xs text-blue-100/70 font-bold uppercase tracking-widest leading-relaxed">
-                      AI Historical context synchronized with live telemetry.
-                      Detected vibration shift in Hampi Vittal Node core.
-                    </p>
-                  </div>
-                  <button className="mt-8 flex items-center gap-3 text-[10px] font-black uppercase tracking-widest bg-white text-blue-600 px-6 py-4 rounded-2xl w-fit hover:bg-slate-100 transition-all">
-                    Analyze Anomaly <ChevronRight className="w-3 h-3" />
-                  </button>
-                </div>
-              </div>
-
+            {/* ROW 2: Health Integrity & IoT Matrix */}
+            <div className="h-full">
+              <HeritageHealthMonitor />
+            </div>
+            <div className="h-full">
+              <IoTNeuralGridStatic />
             </div>
 
           </div>

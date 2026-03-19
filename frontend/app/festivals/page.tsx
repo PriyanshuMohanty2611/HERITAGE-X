@@ -21,6 +21,7 @@ import {
   Sparkles,
   Ticket,
   Users,
+  QrCode,
 } from "lucide-react";
 import { Sidebar } from "../../components/Sidebar";
 import { TopHeader } from "../../components/TopHeader";
@@ -247,23 +248,23 @@ const EVENT_TYPE_META: Record<
 > = {
   Festival: {
     icon: Music,
-    tone: "text-orange-300",
-    badge: "bg-orange-500/10 text-orange-300 border-orange-500/20",
+    tone: "text-orange-600",
+    badge: "bg-orange-50 text-orange-700 border-orange-200",
   },
   "Cultural Event": {
     icon: Sparkles,
-    tone: "text-sky-300",
-    badge: "bg-sky-500/10 text-sky-300 border-sky-500/20",
+    tone: "text-sky-600",
+    badge: "bg-sky-50 text-sky-700 border-sky-200",
   },
   "Historical Timeline": {
     icon: History,
-    tone: "text-slate-200",
-    badge: "bg-slate-500/10 text-slate-200 border-slate-500/20",
+    tone: "text-slate-700",
+    badge: "bg-slate-50 text-slate-700 border-slate-200",
   },
   "Heritage Anniversary": {
     icon: Landmark,
-    tone: "text-amber-300",
-    badge: "bg-amber-500/10 text-amber-300 border-amber-500/20",
+    tone: "text-amber-600",
+    badge: "bg-amber-50 text-amber-700 border-amber-200",
   },
 };
 
@@ -384,7 +385,7 @@ export default function FestivalTrackerPage() {
   }).format(visibleMonth);
 
   return (
-    <main className="heritage-page-shell relative flex h-dvh w-screen overflow-hidden bg-[#060b18] font-sans text-white">
+    <main className="heritage-page-shell flex min-h-screen w-full font-sans overflow-x-hidden relative bg-transparent text-slate-950">
       <div className="pointer-events-none absolute inset-0 z-0 opacity-20">
         <div className="absolute top-0 left-0 h-[520px] w-[520px] rounded-full bg-orange-600/10 blur-[150px]" />
         <div className="absolute right-0 bottom-0 h-[540px] w-[540px] rounded-full bg-sky-600/10 blur-[160px]" />
@@ -393,27 +394,29 @@ export default function FestivalTrackerPage() {
       <Sidebar />
 
       <div className="relative z-10 flex flex-1 flex-col overflow-hidden">
-        <TopHeader />
+        <div className="header-neural h-20 flex items-center justify-between px-6 z-20 shrink-0 border-b border-white/10">
+          <TopHeader />
+        </div>
 
-        <div className="scrollbar-hide flex-1 overflow-y-auto p-6 lg:p-14">
+        <div className="scrollbar-hide flex-1 overflow-y-auto p-4 md:p-8 lg:p-16 neural-content-shell">
           <div className="mx-auto max-w-[1700px] space-y-10 pb-20">
             <header className="flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
               <div className="space-y-5">
-                <div className="flex items-center gap-5">
-                  <div className="flex h-20 w-20 items-center justify-center rounded-3xl border border-orange-500/20 bg-orange-500/10 shadow-2xl">
-                    <CalendarIcon className="h-10 w-10 text-orange-400" />
-                  </div>
-                  <div>
-                    <h1 className="text-5xl font-black uppercase italic tracking-tight text-white lg:text-7xl">
-                      Cultural Calendar
-                    </h1>
-                    <p className="mt-2 ml-1 text-[11px] font-black uppercase tracking-[0.35em] text-slate-500">
-                      Festivals, cultural events, timelines, and heritage anniversaries
-                    </p>
-                  </div>
-                </div>
+                 <div className="flex items-center gap-4 lg:gap-8">
+                   <div className="flex h-16 w-16 lg:h-20 lg:w-20 items-center justify-center rounded-2xl lg:rounded-3xl border border-orange-500/20 bg-orange-500/10 shadow-2xl">
+                     <CalendarIcon className="h-8 w-8 lg:h-10 lg:w-10 text-orange-400" />
+                   </div>
+                   <div>
+                     <h1 className="text-[clamp(1.75rem,8vw,4.5rem)] font-black uppercase italic tracking-tight text-slate-950 leading-none">
+                       Cultural Calendar
+                     </h1>
+                     <p className="mt-2 text-[9px] lg:text-[11px] font-black uppercase tracking-[0.3em] text-slate-500 border-b border-orange-500/10 pb-2">
+                       Festivals, cultural events, timelines, and heritage anniversaries
+                     </p>
+                   </div>
+                 </div>
 
-                <p className="max-w-3xl text-sm leading-relaxed text-slate-300 lg:text-base">
+                <p className="max-w-3xl text-sm leading-relaxed text-slate-600 lg:text-base">
                   Historical timelines and archival context now sit inside one
                   calendar workspace, so festival planning, cultural programs,
                   and heritage commemorations can be explored together.
@@ -444,53 +447,53 @@ export default function FestivalTrackerPage() {
               </div>
             </header>
 
-            <section className="rounded-[3rem] border border-white/5 bg-[#0a1120]/90 p-6 shadow-2xl lg:p-8">
-              <div className="mb-6 flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-                  <Sparkles className="h-5 w-5 text-orange-400" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">
-                    Filter Console
-                  </p>
-                  <p className="text-lg font-black uppercase italic tracking-tight text-white">
-                    Region, culture, and date filters
-                  </p>
-                </div>
-              </div>
+            <section className="rounded-3xl lg:rounded-4xl border border-slate-200 bg-white/60 backdrop-blur-3xl p-4 lg:p-8 shadow-2xl">
+               <div className="mb-8 flex items-center gap-4">
+                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
+                   <Sparkles className="h-6 w-6 text-orange-400" />
+                 </div>
+                 <div>
+                   <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">
+                     Filter Console
+                   </p>
+                   <p className="text-xl font-black uppercase italic tracking-tight text-slate-950">
+                     Region, culture, and date filters
+                   </p>
+                 </div>
+               </div>
 
               <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1fr_1fr_1fr_1.2fr_auto]">
-                <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3">
+                <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/50 px-4 py-3">
                   <Flag className="h-4 w-4 text-orange-400" />
                   <select
                     value={filterRegion}
                     onChange={(event) => setFilterRegion(event.target.value)}
-                    className="w-full bg-transparent text-sm font-semibold text-white outline-none"
+                    className="w-full bg-transparent text-sm font-semibold text-slate-950 outline-none cursor-pointer"
                   >
                     {regions.map((region) => (
-                      <option key={region} value={region} className="bg-slate-900">
+                      <option key={region} value={region} className="bg-white text-slate-950">
                         {region}
                       </option>
                     ))}
                   </select>
                 </label>
 
-                <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3">
+                <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/50 px-4 py-3">
                   <Bookmark className="h-4 w-4 text-sky-400" />
                   <select
                     value={filterCulture}
                     onChange={(event) => setFilterCulture(event.target.value)}
-                    className="w-full bg-transparent text-sm font-semibold text-white outline-none"
+                    className="w-full bg-transparent text-sm font-semibold text-slate-950 outline-none cursor-pointer"
                   >
                     {cultures.map((culture) => (
-                      <option key={culture} value={culture} className="bg-slate-900">
+                      <option key={culture} value={culture} className="bg-white text-slate-950">
                         {culture}
                       </option>
                     ))}
                   </select>
                 </label>
 
-                <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3">
+                <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/50 px-4 py-3">
                   <CalendarIcon className="h-4 w-4 text-amber-300" />
                   <input
                     type="date"
@@ -503,18 +506,18 @@ export default function FestivalTrackerPage() {
                         setVisibleMonth(parseIsoDate(`${nextDate.slice(0, 7)}-01`));
                       }
                     }}
-                    className="w-full bg-transparent text-sm font-semibold text-white outline-none"
+                    className="w-full bg-transparent text-sm font-semibold text-slate-900 outline-none"
                   />
                 </label>
 
-                <label className="group relative flex items-center rounded-2xl border border-white/10 bg-black/30 px-4 py-3">
+                <label className="group relative flex items-center rounded-2xl border border-slate-200 bg-white/50 px-4 py-3">
                   <Search className="mr-3 h-4 w-4 text-slate-500 transition-colors group-focus-within:text-orange-400" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.target.value)}
                     placeholder="Search events, timelines, anniversaries..."
-                    className="w-full bg-transparent text-sm font-semibold text-white outline-none placeholder:text-slate-500"
+                    className="w-full bg-transparent text-sm font-semibold text-slate-900 outline-none placeholder:text-slate-500"
                   />
                 </label>
 
@@ -525,7 +528,7 @@ export default function FestivalTrackerPage() {
                     setFilterDate("");
                     setSearchQuery("");
                   }}
-                  className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-[11px] font-black uppercase tracking-[0.25em] text-slate-300 transition-all hover:border-orange-500/30 hover:text-white"
+                  className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-3 text-[11px] font-black uppercase tracking-[0.25em] text-slate-500 transition-all hover:border-orange-500/30 hover:bg-orange-500 hover:text-white shadow-sm active:scale-95"
                 >
                   Clear Filters
                 </button>
@@ -538,13 +541,13 @@ export default function FestivalTrackerPage() {
                 return (
                   <div
                     key={type}
-                    className="flex items-center justify-between rounded-[2rem] border border-white/5 bg-white/5 px-6 py-5"
+                    className="flex items-center justify-between rounded-4xl border border-white/5 bg-white/5 px-6 py-5"
                   >
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">
                         {type}
                       </p>
-                      <p className="mt-2 text-3xl font-black italic tracking-tight text-white">
+                      <p className="mt-2 text-3xl font-black italic tracking-tight text-slate-950">
                         {count}
                       </p>
                     </div>
@@ -558,13 +561,13 @@ export default function FestivalTrackerPage() {
 
             {viewMode === "calendar" ? (
               <section className="grid grid-cols-12 gap-8">
-                <div className="col-span-12 rounded-[3rem] border border-white/5 bg-white/5 p-6 shadow-2xl xl:col-span-8 lg:p-8">
+                <div className="col-span-12 rounded-4xl border border-white/5 bg-white/5 p-6 shadow-2xl xl:col-span-8 lg:p-8">
                   <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-[0.35em] text-slate-500">
                         Calendar Interface
                       </p>
-                      <h2 className="mt-2 text-3xl font-black uppercase italic tracking-tight text-white">
+                      <h2 className="mt-2 text-3xl font-black uppercase italic tracking-tight text-slate-950">
                         {visibleMonthLabel}
                       </h2>
                     </div>
@@ -580,7 +583,7 @@ export default function FestivalTrackerPage() {
                             ),
                           )
                         }
-                        className="rounded-2xl border border-white/10 bg-black/30 p-3 text-slate-400 transition-all hover:border-white/20 hover:text-white"
+                        className="rounded-2xl border border-slate-200 bg-white p-3 text-slate-400 transition-all hover:border-blue-500 hover:text-blue-600 shadow-sm"
                       >
                         <ChevronLeft className="h-5 w-5" />
                       </button>
@@ -594,7 +597,7 @@ export default function FestivalTrackerPage() {
                             ),
                           )
                         }
-                        className="rounded-2xl border border-white/10 bg-black/30 p-3 text-slate-400 transition-all hover:border-white/20 hover:text-white"
+                        className="rounded-2xl border border-slate-200 bg-white p-3 text-slate-400 transition-all hover:border-blue-500 hover:text-blue-600 shadow-sm"
                       >
                         <ChevronRight className="h-5 w-5" />
                       </button>
@@ -626,16 +629,16 @@ export default function FestivalTrackerPage() {
                           onClick={() => setSelectedDate(isoDay)}
                           className={`min-h-[112px] rounded-[1.75rem] border p-3 text-left transition-all ${
                             isSelected
-                              ? "border-orange-500/40 bg-orange-500/10 shadow-[0_0_30px_rgba(249,115,22,0.18)]"
-                              : "border-white/5 bg-black/20 hover:border-white/15 hover:bg-white/5"
-                          } ${isCurrentMonth ? "text-white" : "text-slate-600"}`}
+                              ? "border-orange-500 bg-orange-50 shadow-xl"
+                              : "border-slate-100 bg-white hover:border-slate-300 hover:shadow-md"
+                           } ${isCurrentMonth ? "text-slate-950" : "text-slate-400"} rounded-3xl`}
                         >
                           <div className="flex items-start justify-between gap-3">
                             <span className="text-lg font-black tracking-tight">
                               {day.getDate()}
                             </span>
                             {dayNodes.length > 0 ? (
-                              <span className="rounded-full bg-orange-500/15 px-2 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-orange-300">
+                              <span className="rounded-full bg-orange-500/15 px-2 py-1 text-[9px] font-black uppercase tracking-[0.2em] text-orange-600">
                                 {dayNodes.length}
                               </span>
                             ) : null}
@@ -647,10 +650,10 @@ export default function FestivalTrackerPage() {
                               return (
                                 <div
                                   key={node.id}
-                                  className="flex items-center gap-2 rounded-xl border border-white/5 bg-white/5 px-2.5 py-2"
+                                  className="flex items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 px-2.5 py-2 shadow-sm"
                                 >
-                                  <Icon className="h-3.5 w-3.5 shrink-0 text-orange-300" />
-                                  <span className="truncate text-[10px] font-bold uppercase tracking-[0.14em]">
+                                  <Icon className={`h-3.5 w-3.5 shrink-0 ${EVENT_TYPE_META[node.type].tone}`} />
+                                  <span className="truncate text-[10px] font-bold uppercase tracking-[0.14em] text-slate-700">
                                     {node.name}
                                   </span>
                                 </div>
@@ -664,7 +667,7 @@ export default function FestivalTrackerPage() {
                 </div>
 
                 <div className="col-span-12 space-y-6 xl:col-span-4">
-                  <div className="rounded-[3rem] border border-white/10 bg-[#0c1424] p-6 shadow-2xl lg:p-8">
+                  <div className="rounded-4xl border border-slate-200 bg-white p-6 shadow-2xl lg:p-8">
                     <div className="mb-6 flex items-center gap-4 border-b border-white/5 pb-5">
                       <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-orange-500/20 bg-orange-500/10">
                         <Clock className="h-6 w-6 text-orange-400" />
@@ -673,7 +676,7 @@ export default function FestivalTrackerPage() {
                         <p className="text-[10px] font-black uppercase tracking-[0.35em] text-slate-500">
                           Selected Date
                         </p>
-                        <p className="text-xl font-black uppercase italic tracking-tight text-white">
+                        <p className="text-xl font-black uppercase italic tracking-tight text-slate-950">
                           {formatLongDate(selectedDate)}
                         </p>
                       </div>
@@ -686,15 +689,15 @@ export default function FestivalTrackerPage() {
                           return (
                             <article
                               key={node.id}
-                              className="rounded-[2rem] border border-white/5 bg-white/5 p-5 transition-all hover:border-orange-500/20"
+                              className="rounded-4xl border border-slate-100 bg-slate-50 p-5 transition-all hover:border-orange-500/20 hover:bg-white hover:shadow-xl"
                             >
                               <div className="flex items-start justify-between gap-4">
                                 <div className="flex min-w-0 items-center gap-3">
-                                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-black/30">
-                                    <Icon className="h-5 w-5 text-orange-300" />
+                                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white shadow-sm">
+                                    <Icon className={`h-5 w-5 ${EVENT_TYPE_META[node.type].tone}`} />
                                   </div>
                                   <div className="min-w-0">
-                                    <p className="truncate text-lg font-black uppercase italic tracking-tight text-white">
+                                    <p className="truncate text-lg font-black uppercase italic tracking-tight text-slate-950">
                                       {node.name}
                                     </p>
                                     <p className="mt-1 text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">
@@ -710,16 +713,32 @@ export default function FestivalTrackerPage() {
                                   <MapPin className="h-4 w-4 text-orange-400" />
                                   <span>{node.location}</span>
                                 </div>
-                                <div className="flex items-center gap-3">
-                                  <Clock className="h-4 w-4 text-sky-400" />
-                                  <span>{formatDateRange(node.date, node.endDate)}</span>
+                                <div className="flex select-none items-center gap-3 rounded-3xl bg-orange-500/10 px-4 py-3 border border-orange-500/20">
+                                  <Ticket className="h-4 w-4 text-orange-400" />
+                                  <div>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Access Type</p>
+                                    <p className="text-xs font-black uppercase italic tracking-tight text-slate-950">{node.access}</p>
+                                  </div>
+                                  {node.access !== "Open Access" && (
+                                    <div className="ml-auto w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-blue-600 group-hover:border-blue-400 transition-all">
+                                      <QrCode className="w-4 h-4 text-blue-400 group-hover:text-white" />
+                                    </div>
+                                  )}
+                                </div>
+
+                                <div className="flex select-none items-center gap-3 rounded-3xl bg-sky-500/10 px-4 py-3 border border-sky-500/20">
+                                  <Users className="h-4 w-4 text-sky-400" />
+                                  <div>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Estimated Reach</p>
+                                    <p className="text-xs font-black uppercase italic tracking-tight text-slate-950">{node.participants}</p>
+                                  </div>
                                 </div>
                               </div>
                             </article>
                           );
                         })
                       ) : (
-                        <div className="flex min-h-[280px] flex-col items-center justify-center rounded-[2rem] border border-dashed border-white/10 bg-black/20 px-6 text-center text-slate-500">
+                        <div className="flex min-h-[280px] flex-col items-center justify-center rounded-4xl border border-dashed border-white/10 bg-black/20 px-6 text-center text-slate-500">
                           <Info className="mb-4 h-10 w-10" />
                           <p className="text-[11px] font-black uppercase tracking-[0.28em]">
                             No calendar entries match this day.
@@ -733,12 +752,12 @@ export default function FestivalTrackerPage() {
             ) : null}
 
             {viewMode === "timeline" ? (
-              <section className="rounded-[3rem] border border-white/5 bg-white/5 p-6 shadow-2xl lg:p-10">
+              <section className="rounded-4xl border border-slate-200 bg-white/60 backdrop-blur-3xl p-6 shadow-2xl lg:p-10">
                 <div className="mb-10">
                   <p className="text-[10px] font-black uppercase tracking-[0.35em] text-slate-500">
                     Timeline View
                   </p>
-                  <h2 className="mt-2 text-3xl font-black uppercase italic tracking-tight text-white">
+                  <h2 className="mt-2 text-3xl font-black uppercase italic tracking-tight text-slate-950">
                     Historical threads and live calendar moments
                   </h2>
                 </div>
@@ -751,12 +770,12 @@ export default function FestivalTrackerPage() {
                       const Icon = EVENT_TYPE_META[node.type].icon;
                       return (
                         <article key={node.id} className="relative pl-16">
-                          <div className="absolute top-8 left-[17px] h-4 w-4 rounded-full border-4 border-orange-400 bg-[#060b18] shadow-[0_0_14px_rgba(251,146,60,0.55)]" />
+                          <div className="absolute top-8 left-[17px] h-4 w-4 rounded-full border-4 border-orange-400 bg-slate-900 shadow-[0_0_14px_rgba(251,146,60,0.55)]" />
 
-                          <div className="rounded-[2.5rem] border border-white/5 bg-[#0c1424] p-6 shadow-xl lg:p-8">
+                          <div className="rounded-4xl border border-slate-200 bg-white/80 backdrop-blur-xl p-6 shadow-xl lg:p-8">
                             <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
                               <div className="flex min-w-0 items-start gap-4">
-                                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-black/30">
+                                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white shadow-sm">
                                   <Icon className={`h-6 w-6 ${EVENT_TYPE_META[node.type].tone}`} />
                                 </div>
 
@@ -770,41 +789,41 @@ export default function FestivalTrackerPage() {
                                     </span>
                                   </div>
 
-                                  <h3 className="text-2xl font-black uppercase italic tracking-tight text-white lg:text-3xl">
+                                  <h3 className="text-2xl font-black uppercase italic tracking-tight text-slate-950 lg:text-3xl">
                                     {node.name}
                                   </h3>
-                                  <p className="mt-3 max-w-4xl text-sm leading-relaxed text-slate-300">
+                                  <p className="mt-3 max-w-4xl text-sm leading-relaxed text-slate-600 font-bold">
                                     {node.desc}
                                   </p>
                                 </div>
                               </div>
 
-                              <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-[10px] font-black uppercase tracking-[0.25em] text-slate-300">
+                              <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">
                                 {node.eraLabel}
                               </div>
                             </div>
 
                             <div className="mt-6 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-                              <div className="rounded-[2rem] border border-white/5 bg-black/20 p-5">
-                                <div className="mb-3 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">
-                                  <Bookmark className="h-4 w-4 text-orange-400" />
+                              <div className="rounded-4xl border border-slate-100 bg-slate-50 p-6 shadow-inner">
+                                <div className="mb-3 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.25em] text-slate-400">
+                                  <Bookmark className="h-4 w-4 text-orange-600" />
                                   Heritage Note
                                 </div>
-                                <p className="text-sm leading-relaxed text-slate-300">
+                                <p className="text-sm leading-relaxed text-slate-700 font-bold">
                                   {node.heritageNote}
                                 </p>
                               </div>
 
                               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-                                <div className="flex items-center gap-3 rounded-[1.5rem] border border-white/5 bg-black/20 px-4 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-300">
+                                <div className="flex items-center gap-3 rounded-[1.5rem] border border-slate-100 bg-slate-50 px-4 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-700">
                                   <MapPin className="h-4 w-4 text-orange-400" />
                                   <span>{node.region}</span>
                                 </div>
-                                <div className="flex items-center gap-3 rounded-[1.5rem] border border-white/5 bg-black/20 px-4 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-300">
+                                <div className="flex items-center gap-3 rounded-[1.5rem] border border-slate-100 bg-slate-50 px-4 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-700">
                                   <Users className="h-4 w-4 text-sky-400" />
                                   <span>{node.participants}</span>
                                 </div>
-                                <div className="flex items-center gap-3 rounded-[1.5rem] border border-white/5 bg-black/20 px-4 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-300">
+                                <div className="flex items-center gap-3 rounded-[1.5rem] border border-slate-100 bg-slate-50 px-4 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-700">
                                   <Ticket className="h-4 w-4 text-amber-300" />
                                   <span>{node.access}</span>
                                 </div>
@@ -826,18 +845,23 @@ export default function FestivalTrackerPage() {
                   return (
                     <article
                       key={node.id}
-                      className="group rounded-[3rem] border border-white/5 bg-white/5 p-2 shadow-2xl transition-all hover:-translate-y-1 hover:border-orange-500/20"
+                      className="group rounded-[3rem] border border-slate-200 bg-white/70 p-1 shadow-2xl transition-all hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)]"
                     >
-                      <div className="flex h-full min-h-[560px] flex-col overflow-hidden rounded-[2.5rem] bg-[#0c1424]">
-                        <div className="relative h-52 overflow-hidden">
+                      <div className="flex h-full min-h-[580px] flex-col overflow-hidden rounded-[2.5rem] bg-white border border-slate-100 shadow-md">
+                        <div className="relative h-64 w-full overflow-hidden">
                           <Image
                             src={node.image}
                             alt={node.name}
                             fill
                             sizes="(max-width: 768px) 100vw, (max-width: 1536px) 50vw, 33vw"
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="object-cover transition-transform duration-700 group-hover:scale-110"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-[#0c1424] via-[#0c1424]/25 to-transparent" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
+                          {node.access !== "Open Access" && (
+                            <div className="absolute right-4 top-4 rounded-xl bg-slate-950/80 p-2.5 shadow-2xl backdrop-blur-md">
+                              <QrCode className="h-5 w-5 text-orange-400" />
+                            </div>
+                          )}
                         </div>
 
                         <div className="flex flex-1 flex-col p-6 lg:p-8">
@@ -851,25 +875,25 @@ export default function FestivalTrackerPage() {
                           </div>
 
                           <div className="mt-6 space-y-4">
-                            <h3 className="text-3xl font-black uppercase italic tracking-tight text-white">
+                            <h3 className="text-3xl font-black uppercase italic tracking-tight text-slate-950">
                               {node.name}
                             </h3>
-                            <p className="text-sm leading-relaxed text-slate-300">
+                            <p className="text-sm leading-relaxed text-slate-600 font-bold">
                               {node.desc}
                             </p>
                           </div>
 
                           <div className="mt-6 grid gap-3 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                            <div className="flex items-center gap-3 rounded-2xl border border-white/5 bg-black/20 px-4 py-3">
-                              <MapPin className="h-4 w-4 text-orange-400" />
+                            <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-slate-900">
+                              <MapPin className="h-4 w-4 text-orange-600" />
                               <span>{node.location}</span>
                             </div>
-                            <div className="flex items-center gap-3 rounded-2xl border border-white/5 bg-black/20 px-4 py-3">
-                              <Clock className="h-4 w-4 text-sky-400" />
+                            <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-slate-900">
+                              <Clock className="h-4 w-4 text-sky-600" />
                               <span>{formatDateRange(node.date, node.endDate)}</span>
                             </div>
-                            <div className="flex items-center gap-3 rounded-2xl border border-white/5 bg-black/20 px-4 py-3">
-                              <Bookmark className="h-4 w-4 text-amber-300" />
+                            <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-slate-900">
+                              <Bookmark className="h-4 w-4 text-amber-600" />
                               <span>{node.culture}</span>
                             </div>
                           </div>
@@ -878,7 +902,7 @@ export default function FestivalTrackerPage() {
                             {node.highlights.map((highlight) => (
                               <span
                                 key={highlight}
-                                className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-300"
+                                className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-800"
                               >
                                 {highlight}
                               </span>
@@ -886,11 +910,11 @@ export default function FestivalTrackerPage() {
                           </div>
 
                           <div className="mt-auto pt-8">
-                            <div className="rounded-[2rem] border border-white/5 bg-black/20 p-4">
-                              <p className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">
-                                Heritage Note
+                            <div className="rounded-[2rem] border border-slate-100 bg-slate-50 p-6 shadow-inner">
+                              <p className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-400 flex items-center gap-2">
+                                <Landmark className="w-3.5 h-3.5" /> Heritage Note
                               </p>
-                              <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                              <p className="mt-3 text-sm leading-relaxed text-slate-800 font-bold">
                                 {node.heritageNote}
                               </p>
                             </div>
@@ -903,7 +927,7 @@ export default function FestivalTrackerPage() {
               </section>
             ) : null}
 
-            <section className="relative overflow-hidden rounded-[3rem] border border-white/5 bg-gradient-to-br from-[#0a1120] to-[#131b2f] p-8 shadow-2xl lg:p-12">
+            <section className="relative overflow-hidden rounded-[3rem] border border-slate-200 bg-white p-8 shadow-2xl lg:p-12">
               <div className="absolute top-0 right-0 h-[360px] w-[360px] translate-x-1/3 -translate-y-1/3 rounded-full bg-orange-500/10 blur-[120px]" />
 
               <div className="relative z-10 grid gap-8 lg:grid-cols-[1.5fr_0.8fr] lg:items-center">
@@ -911,10 +935,10 @@ export default function FestivalTrackerPage() {
                   <p className="text-[10px] font-black uppercase tracking-[0.35em] text-slate-500">
                     Calendar Contributions
                   </p>
-                  <h2 className="text-4xl font-black uppercase italic tracking-tight text-white lg:text-5xl">
+                  <h2 className="text-4xl font-black uppercase italic tracking-tight text-slate-950 lg:text-5xl">
                     Recommend a cultural entry
                   </h2>
-                  <p className="max-w-2xl text-base leading-relaxed text-slate-300">
+                  <p className="max-w-2xl text-base leading-relaxed text-slate-600 font-bold">
                     Submit festivals, cultural programs, timeline markers, or
                     heritage anniversaries to keep the calendar complete across
                     regions and communities.
@@ -924,11 +948,11 @@ export default function FestivalTrackerPage() {
                   </button>
                 </div>
 
-                <div className="rounded-[2.5rem] border border-white/5 bg-black/30 p-8 text-center">
-                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[2rem] border border-orange-500/20 bg-orange-500/10">
+                <div className="rounded-[2.5rem] border border-slate-100 bg-slate-50 p-8 text-center shadow-inner">
+                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[2rem] border border-orange-500/20 bg-white">
                     <ShieldCheck className="h-10 w-10 text-orange-400" />
                   </div>
-                  <p className="mt-5 text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">
+                  <p className="mt-5 text-[11px] font-black uppercase tracking-[0.3em] text-slate-500">
                     Event cards, icons, and heritage notes are normalized in the
                     same layout so festivals and timelines remain visually aligned.
                   </p>

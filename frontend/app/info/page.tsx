@@ -11,14 +11,16 @@ import {
 
 export default function InfoPage() {
   return (
-    <main className="heritage-page-shell flex h-dvh w-screen font-sans overflow-hidden bg-slate-950 text-white relative">
+    <main className="heritage-page-shell flex h-dvh w-screen font-sans overflow-hidden bg-transparent text-white relative">
       <div className="absolute inset-0 z-0 opacity-10 pointer-events-none bg-[radial-gradient(circle_at_0%_100%,#0ea5e9,transparent_70%)]" />
 
       <Sidebar />
       <div className="flex-1 flex flex-col relative z-10 overflow-hidden">
-        <TopHeader />
+        <div className="header-neural h-20 flex items-center justify-between px-6 z-20 shrink-0">
+          <TopHeader />
+        </div>
         
-        <div className="flex-1 overflow-y-auto p-6 lg:p-12 scrollbar-hide">
+        <div className="flex-1 overflow-y-auto p-6 lg:p-12 scrollbar-hide neural-content-shell">
           <div className="max-w-[1700px] mx-auto space-y-20 pb-20">
             
             {/* Header */}

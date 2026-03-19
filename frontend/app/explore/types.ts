@@ -9,11 +9,20 @@ export interface Monument {
   coords?: number[];
   zoom?: number;
   query?: string;
+  qr?: string;
   architecture?: string;
   history?: string;
   bestTime?: string;
   foodIntel?: { item: string; price: string; spot: string }[];
   feedback?: string;
+  verified?: string;
+}
+
+export interface BookingDetails {
+  date: string;
+  time: string;
+  days: number;
+  type: string;
 }
 
 export interface Booking {

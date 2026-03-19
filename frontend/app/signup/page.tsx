@@ -48,7 +48,7 @@ export default function SignupPage() {
     };
 
     return (
-        <main className="heritage-page-shell flex min-h-screen w-screen items-center justify-center p-4 relative overflow-hidden" style={{ background: "var(--background)" }}>
+        <main className="heritage-page-shell flex min-h-screen w-screen items-center justify-center p-4 relative overflow-hidden bg-transparent">
             <div className="page-bg" style={{ backgroundImage: "url('/assets/Meenakshi Temple/meenakshi-amman-temple-india.avif')" }} />
 
             <div className="absolute top-1/4 left-1/4 w-80 h-80 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%)" }} />

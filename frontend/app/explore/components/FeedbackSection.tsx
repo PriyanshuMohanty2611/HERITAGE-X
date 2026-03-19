@@ -19,7 +19,7 @@ export const FeedbackSection: React.FC = () => {
 
       <header className="mb-20 text-center flex flex-col items-center">
         <div className="w-24 h-24 rounded-[2rem] bg-blue-600 flex items-center justify-center mb-10 shadow-3xl shadow-blue-600/20">
-           <Globe className="w-12 h-12 text-white animate-[pulse_3s_infinite]" />
+           <Globe className="w-12 h-12 text-white" />
         </div>
         <h2 className="text-6xl lg:text-8xl font-black text-slate-950 uppercase italic tracking-tighter leading-none mb-6">
           Peer <span className="text-blue-600">Network</span>

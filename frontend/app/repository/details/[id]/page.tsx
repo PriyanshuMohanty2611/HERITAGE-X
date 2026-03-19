@@ -35,12 +35,14 @@ export default function RepositoryDetailPage({ params }: { params: { id: string 
         : data.details;
 
   return (
-    <main className="heritage-page-shell flex h-dvh w-screen font-sans overflow-hidden bg-[#060b18] text-white relative">
+    <main className="heritage-page-shell flex h-dvh w-screen font-sans overflow-hidden bg-transparent text-white relative">
       <Sidebar />
       <div className="flex-1 flex flex-col relative z-10 overflow-hidden">
-        <TopHeader />
+        <div className="header-neural h-20 flex items-center justify-between px-6 z-20 shrink-0">
+          <TopHeader />
+        </div>
 
-        <div className="flex-1 overflow-y-auto p-6 lg:p-14 scrollbar-hide">
+        <div className="flex-1 overflow-y-auto p-6 lg:p-14 scrollbar-hide neural-content-shell">
           <div className="max-w-6xl mx-auto space-y-10 pb-20">
             <Link
               href="/repository"

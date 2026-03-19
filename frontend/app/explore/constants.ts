@@ -84,14 +84,14 @@ export const MONUMENTS: Monument[] = [
     image: "/assets/KONARK/konark_hero.png", 
     gallery: [
       "/assets/KONARK/konark_hero.png",
-      "/assets/KONARK/download (2).jpg",
-      "/assets/KONARK/download (3).jpg",
-      "/assets/KONARK/download (4).jpg",
-      "/assets/KONARK/download (5).jpg"
+      "/assets/KINGS/king_narasimhadeva.png",
+      "/assets/KONARK/download (1).jpg",
+      "/assets/KONARK/download (2).jpg"
     ],
     desc: "A 13th-century chariot temple dedicated to Surya, known for its intricate stone carvings.", 
     facts: ["Engineering marvel of stone wheels", "Sundial precision within seconds", "UNESCO World Heritage Site", "Khondalite rock structure", "Arka Kshetra significance"],
     videoId: "v1eK7fP8j9o",
+    qr: "/scanner.jpg",
     architecture: "Kalinga Style (Rekha Deulas)",
     history: "Built by King Narasimhadeva I of Eastern Ganga Dynasty in 1250 CE. It represents the Sun God's chariot with 24 wheels.",
     bestTime: "October to March (Konark Festival timing)",
@@ -99,7 +99,8 @@ export const MONUMENTS: Monument[] = [
       { item: "Prawn Rolls / Seafood", price: "₹100-200", spot: "Hotel Chandrabhaga" },
       { item: "Traditional Odia Thali", price: "₹200", spot: "Wildgrass Restaurant" }
     ],
-    feedback: "Verified by @OdishaTourism: 'The spiritual energy at sunrise is unmatched.' - LinkedIn Review"
+    feedback: "Verified by @OdishaTourism: 'The spiritual energy at sunrise is unmatched.' - LinkedIn Review",
+    verified: "Neural-Verified by Gemini"
   },
   { 
     id: 2, 
@@ -107,17 +108,17 @@ export const MONUMENTS: Monument[] = [
     query: "Taj+Mahal+Agra+India", 
     coords: [27.1751, 78.0421], 
     zoom: 18, 
-    image: "/assets/Taj Mahal/Taj_Mahal.png", 
+    image: "/assets/Taj Mahal/gettyimages-155096944-612x612.jpg", 
     gallery: [
-      "/assets/Taj Mahal/Taj_Mahal.png",
-      "/assets/Taj Mahal/Taj_Mahal.png",
-      "/assets/Taj Mahal/Taj_Mahal.png",
-      "/assets/Taj Mahal/Taj_Mahal.png",
-      "/assets/Taj Mahal/Taj_Mahal.png"
+      "/assets/Taj Mahal/gettyimages-155096944-612x612.jpg",
+      "/assets/Taj Mahal/97.png",
+      "/assets/Taj Mahal/download.jpg",
+      "/assets/Taj Mahal/sunrise-at-taj-mahal--agra--uttar-pradash--india-583682538-5b91840bc9e77c0050bdc67b.jpg"
     ],
     desc: "Ivory-white marble mausoleum on the south bank of the Yamuna river.", 
     facts: ["Built by Shah Jahan", "Symbol of eternal love", "Persian and Mughal architecture", "Optical illusions in design", "Changing colors with daylight"],
     videoId: "49HToQHBycI",
+    qr: "/scanner.jpg",
     architecture: "Mughal Architecture",
     history: "Commissioned in 1632 by the Mughal emperor Shah Jahan to house the tomb of his favorite wife, Mumtaz Mahal.",
     bestTime: "Full moon night (rare) or early morning sunrise.",
@@ -125,7 +126,8 @@ export const MONUMENTS: Monument[] = [
       { item: "Agra Petha", price: "₹150", spot: "Panchi Petha" },
       { item: "Mughlai Korma", price: "₹500", spot: "Joney's Place" }
     ],
-    feedback: "@UNESCO: 'A jewel of Muslim art in India and one of the universally admired masterpieces.'"
+    feedback: "@UNESCO: 'A jewel of Muslim art in India and one of the universally admired masterpieces.'",
+    verified: "Neural-Verified by Gemini"
   },
   { 
     id: 3, 
@@ -136,21 +138,23 @@ export const MONUMENTS: Monument[] = [
     image: "/assets/Hampi Ruins/places-to-visit-in-hampi-FEATURE-compressed.jpg", 
     gallery: [
       "/assets/Hampi Ruins/places-to-visit-in-hampi-FEATURE-compressed.jpg",
-      "/assets/Hampi Ruins/places-to-visit-in-hampi-FEATURE-compressed.jpg",
-      "/assets/Hampi Ruins/places-to-visit-in-hampi-FEATURE-compressed.jpg",
-      "/assets/Hampi Ruins/places-to-visit-in-hampi-FEATURE-compressed.jpg",
-      "/assets/Hampi Ruins/places-to-visit-in-hampi-FEATURE-compressed.jpg"
+      "/assets/Hampi Ruins/download.jpg",
+      "/assets/Hampi Ruins/images.jpg",
+      "/assets/Hampi Ruins/virupaksha-temple-hampi-karnataka-1-attr-nearby.jpg",
+      "/assets/Hampi Ruins/vitthala-temple-complex-hampi-tri-hero.jpg"
     ],
     desc: "The capital of the Vijayanagara Empire, featuring stunning boulder-strewn landscapes and ancient temples.", 
     facts: ["Musical stone pillars", "Vittala Temple stone chariot", "Underground Shiva temple", "Virupaksha's inverted shadow", "World's largest open-air museum"],
     videoId: "vXm80E1O0T8",
+    qr: "/scanner.jpg",
     architecture: "Vijayanagara Architecture",
     history: "Prosperous capital until 1565. Famous for the Virupaksha Temple and Vitthala Temple complex.",
     bestTime: "November (Hampi Utsav)",
     foodIntel: [
       { item: "South Indian Thali", price: "₹200", spot: "Mango Tree Restaurant" }
     ],
-    feedback: "@NatGeo: 'The landscape of Hampi is otherworldly, blending nature and ruins perfectly.'"
+    feedback: "@NatGeo: 'The landscape of Hampi is otherworldly, blending nature and ruins perfectly.'",
+    verified: "Neural-Verified by Gemini"
   },
   { 
     id: 4, 
@@ -158,21 +162,25 @@ export const MONUMENTS: Monument[] = [
     query: "Ajanta+Caves+Maharashtra+India", 
     coords: [20.5519, 75.7507],
     zoom: 18, 
-    image: "/assets/Ajanta Caves/ajanta_cave.png", 
+    image: "/assets/Ajanta Caves/ajanta-caves-5-to-8-3071.jpg", 
     gallery: [
-      "/assets/Ajanta Caves/ajanta_cave.png",
-      "/assets/Ajanta Caves/ajanta_cave.png"
+      "/assets/Ajanta Caves/ajanta-caves-5-to-8-3071.jpg",
+      "/assets/Ajanta Caves/Sculptures-inside-the-rock-cut-caves-1.jpg",
+      "/assets/Ajanta Caves/download.jpg",
+      "/assets/Ajanta Caves/images.jpg"
     ],
     desc: "Rock-cut Buddhist cave monuments dating from the 2nd century BCE to about 480 CE.", 
     facts: ["Jataka tale murals", "Mastery of natural pigments", "Hidden for centuries", "Panoramic river horseshoe view", "Stunning rock-cut sculptures"],
     videoId: "3-pL1qfS0Lw",
+    qr: "/scanner.jpg",
     architecture: "Buddhist Rock-cut Architecture",
     history: "Discovered by a British officer in 1819 while tiger hunting.",
     bestTime: "Monsoon (August-September) for lush greenery.",
     foodIntel: [
       { item: "Maharashtrian Puran Poli", price: "₹80", spot: "MTDC Resort" }
     ],
-    feedback: "@Historian_X: 'The frescoes at Ajanta remain the pinnacle of Indian classical art.'"
+    feedback: "@Historian_X: 'The frescoes at Ajanta remain the pinnacle of Indian classical art.'",
+    verified: "Neural-Verified by Gemini"
   },
   { 
     id: 5, 
@@ -180,21 +188,25 @@ export const MONUMENTS: Monument[] = [
     query: "Qutub+Minar+Delhi+India", 
     coords: [28.5244, 77.1855],
     zoom: 18, 
-    image: "/assets/Qutub Minar/qutub_minar.png", 
+    image: "/assets/Sanchi Stupa/Qutub Minar/qutub1_042717100950.jpg", 
     gallery: [
-      "/assets/Qutub Minar/qutub_minar.png",
-      "/assets/Qutub Minar/qutub_minar.png"
+      "/assets/Sanchi Stupa/Qutub Minar/qutub1_042717100950.jpg",
+      "/assets/Sanchi Stupa/Qutub Minar/download.jpg",
+      "/assets/Sanchi Stupa/Qutub Minar/images.jpg",
+      "/assets/Sanchi Stupa/Qutub Minar/m_activities_delhi_qutab_minar_l_384_574.avif"
     ],
     desc: "A 73-metre tall tapering tower of five storeys, with a 14.3 metres base diameter.", 
     facts: ["Iron pillar rust-resistance", "Calligraphic inscriptions", "Indo-Islamic architecture", "Highest brick minaret", "Quwwat-ul-Islam mosque site"],
     videoId: "3-pL1qfS0Lw",
+    qr: "/scanner.jpg",
     architecture: "Indo-Islamic (Afghan style)",
     history: "Construction started by Qutb-ud-din Aibak in 1192 CE.",
     bestTime: "Evening for the light illumination.",
     foodIntel: [
       { item: "Dilli ki Chaat", price: "₹60", spot: "Nearby Kiosks" }
     ],
-    feedback: "@ArcheologyToday: 'The iron pillar's metallurgical secrets still baffle scientists.'"
+    feedback: "@ArcheologyToday: 'The iron pillar's metallurgical secrets still baffle scientists.'",
+    verified: "Neural-Verified by Gemini"
   },
   { 
     id: 6, 
@@ -202,20 +214,25 @@ export const MONUMENTS: Monument[] = [
     query: "Ellora+Caves+Maharashtra+India", 
     coords: [20.0258, 75.1771],
     zoom: 18, 
-    image: "/assets/Ellora Caves/ellora.png", 
+    image: "/assets/Ellora Caves/gettyimages-481998527-1024x1024.jpg", 
     gallery: [
-      "/assets/Ellora Caves/ellora.png",
-      "/assets/Ellora Caves/ellora.png"
+      "/assets/Ellora Caves/gettyimages-481998527-1024x1024.jpg",
+      "/assets/Ellora Caves/images.jpg",
+      "/assets/Ellora Caves/kailasa-temple-an-underrated-engineering-marvel-carved-out-v0-zxbpze3e08md1.webp",
+      "/assets/Ellora Caves/the-kailasa-temple-in-maharashtra-india-carved-out-of-one-v0-8t7tjutdl0x61.webp",
+      "/assets/Ellora Caves/the-kailasa-temple-was-carved-out-of-one-single-rock-also-v0-9v5hegpf95t21.webp"
     ],
     desc: "One of the largest rock-cut monastery-temple cave complexes in the world.", 
     facts: ["Kailasa temple monolith", "Multifaith coexistence", "Downward construction method", "World's largest monolithic excavation", "34 distinct cave monasteries"],
     videoId: "wVlMInscR3M",
+    qr: "/scanner.jpg",
     architecture: "Dravidian & Chalukya influence",
     history: "The Kailash Temple (Cave 16) was carved out of a single rock top-down.",
     bestTime: "November to March.",
     foodIntel: [
       { item: "Naan Khaliya", price: "₹250", spot: "Aurangabad Local" }
     ],
-    feedback: "@GlobalTravel: 'No amount of photos can prepare you for the scale of Kailasa Temple.'"
+    feedback: "@GlobalTravel: 'No amount of photos can prepare you for the scale of Kailasa Temple.'",
+    verified: "Neural-Verified by Gemini"
   }
 ];

@@ -1,122 +1,125 @@
 "use client";
 
+import React from "react";
 import { 
-  Instagram, Facebook, Mail, Zap, Globe, 
-  MapPin, Phone, ShieldCheck, Heart, ArrowUp
+  Globe, 
+  Twitter, 
+  Linkedin, 
+  Instagram, 
+  Mail, 
+  Cpu, 
+  ChevronRight,
+  Heart
 } from "lucide-react";
+import Link from "next/link";
 
-export function Footer() {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
+export const Footer = () => {
   return (
-    <footer className="mt-20 border-t border-white/5 bg-slate-950/50 backdrop-blur-xl relative overflow-hidden">
-      <div className="absolute inset-0 bg-linear-to-b from-transparent to-amber-500/5 pointer-events-none" />
+    <footer className="relative mt-32 border-t border-slate-200 bg-white/40 backdrop-blur-xl py-20 overflow-hidden">
+      {/* Background Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-linear-to-r from-transparent via-blue-500/50 to-transparent" />
       
-      <div className="max-w-[1700px] mx-auto px-10 py-20 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-16 lg:gap-24">
-          
-          {/* Brand Vector (4/12) */}
-          <div className="md:col-span-12 lg:col-span-4 space-y-8">
-            <div className="flex items-center gap-4 group">
-               <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 group-hover:rotate-12 transition-transform shadow-2xl shadow-amber-500/10">
-                  <Globe className="w-7 h-7" />
-               </div>
-               <div>
-                  <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter">Heritage-X</h2>
-                  <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.4em]">Sovereign Intelligence Node</p>
-               </div>
-            </div>
-            <p className="text-lg font-medium text-slate-400 italic leading-relaxed max-w-sm">
-               "Empowering the future of cultural preservation through digitized intelligence and decentralized heritage matrices."
-            </p>
-            <div className="flex items-center gap-4 text-emerald-500 text-[10px] font-black uppercase tracking-widest">
-               <ShieldCheck className="w-4 h-4" /> 256-Bit GNC Encryption Active
-            </div>
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="grid grid-cols-12 gap-12 lg:gap-20">
+          {/* Brand Section */}
+          <div className="col-span-12 lg:col-span-5">
+             <div className="flex items-center gap-3 mb-8 group">
+                <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform">
+                   <Globe className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                   <h3 className="text-2xl font-black italic tracking-tighter uppercase leading-none">Heritage-X</h3>
+                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-1.5">Sovereign Cultural OS</p>
+                </div>
+             </div>
+             <p className="text-slate-600 text-sm leading-relaxed max-w-sm font-medium">
+                The world's first AI-driven cultural intelligence platform dedicated to the 
+                digitization, preservation, and strategic analysis of global heritage assets.
+             </p>
+             
+             <div className="flex items-center gap-4 mt-10">
+                {[Twitter, Instagram, Linkedin, Mail].map((Icon, i) => (
+                   <button key={i} className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:border-blue-500/50 hover:bg-blue-50 transition-all active:scale-90">
+                      <Icon className="w-5 h-5" />
+                   </button>
+                ))}
+             </div>
           </div>
 
-          {/* Social Matrix (4/12) - Connect with us as requested */}
-          <div className="md:col-span-6 lg:col-span-4 space-y-10">
-            <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-[0.5em] flex items-center gap-4">
-               Connect with us <div className="h-px flex-1 bg-white/5" />
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-8">
-               <div className="flex items-center gap-5 group cursor-pointer">
-                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white group-hover:bg-blue-600 transition-all shadow-xl">
-                     <Mail className="w-5 h-5" />
-                  </div>
-                  <div>
-                     <p className="text-sm font-black text-white uppercase tracking-tight">Email</p>
-                     <p className="text-[10px] text-slate-500 font-bold tracking-tight">indian-culture@gov.in</p>
-                  </div>
-               </div>
-               <div className="flex items-center gap-5 group cursor-pointer">
-                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white group-hover:bg-pink-600 transition-all shadow-xl">
-                     <Instagram className="w-5 h-5" />
-                  </div>
-                  <div>
-                     <p className="text-sm font-black text-white uppercase tracking-tight">Instagram</p>
-                     <p className="text-[10px] text-slate-500 font-bold tracking-tight">@indiancultureportal</p>
-                  </div>
-               </div>
-               <div className="flex items-center gap-5 group cursor-pointer">
-                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white group-hover:bg-blue-800 transition-all shadow-xl">
-                     <Facebook className="w-5 h-5" />
-                  </div>
-                  <div>
-                     <p className="text-sm font-black text-white uppercase tracking-tight">Facebook</p>
-                     <p className="text-[10px] text-slate-500 font-bold tracking-tight">@INDCulturePortal</p>
-                  </div>
-               </div>
-               <div className="flex items-center gap-5 group cursor-pointer">
-                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white group-hover:bg-slate-800 transition-all shadow-xl">
-                     <Zap className="w-5 h-5" />
-                  </div>
-                  <div>
-                     <p className="text-sm font-black text-white uppercase tracking-tight">X</p>
-                     <p className="text-[10px] text-slate-500 font-bold tracking-tight">@_indianculture</p>
-                  </div>
-               </div>
-            </div>
+          {/* Links Sections */}
+          <div className="col-span-12 md:col-span-4 lg:col-span-2">
+             <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-[0.4em] mb-8 flex items-center gap-2">
+                <div className="w-4 h-[2px] bg-blue-500" /> Infrastructure
+             </h4>
+             <ul className="space-y-4">
+                {[
+                  { label: "Command Center", href: "/" },
+                  { label: "Heritage Matrix", href: "/repository" },
+                  { label: "Neural Compass", href: "/ai" },
+                  { label: "V-Museum Node", href: "/activities" }
+                ].map((link) => (
+                   <li key={link.label}>
+                      <Link href={link.href} className="text-slate-500 text-sm font-bold uppercase tracking-widest hover:text-blue-600 flex items-center gap-2 group">
+                         <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-blue-500" />
+                         {link.label}
+                      </Link>
+                   </li>
+                ))}
+             </ul>
           </div>
 
-          {/* Quick Nodes (4/12) */}
-          <div className="md:col-span-6 lg:col-span-4 space-y-10">
-            <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-[0.5em] flex items-center gap-4">
-               Navigation <div className="h-px flex-1 bg-white/5" />
-            </h3>
-            <div className="grid grid-cols-2 gap-4">
-               {['Archives', 'Circuit Gen', 'Guide Hub', 'About Us', 'Jobs', 'Terms'].map(link => (
-                  <button key={link} className="text-left py-2 text-[11px] font-black text-slate-500 hover:text-white uppercase tracking-widest transition-colors flex items-center gap-2 group">
-                     <div className="w-1 h-1 rounded-full bg-amber-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                     {link}
-                  </button>
-               ))}
-            </div>
-            
-            <div className="pt-10 space-y-6 border-t border-white/5">
-               <button 
-                 onClick={scrollToTop}
-                 className="flex items-center gap-4 text-[10px] font-black text-amber-500 hover:text-white uppercase tracking-[0.3em] transition-all group"
-               >
-                  Back to Zenith <ArrowUp className="w-4 h-4 group-hover:-translate-y-1 transition-transform" />
-               </button>
-            </div>
+          <div className="col-span-12 md:col-span-4 lg:col-span-2">
+             <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-[0.4em] mb-8 flex items-center gap-2">
+                <div className="w-4 h-[2px] bg-blue-500" /> Operations
+             </h4>
+             <ul className="space-y-4">
+                {[
+                  { label: "Visit & Booking", href: "/repository" },
+                  { label: "Mobility Hub", href: "/transport" },
+                  { label: "Hotel Assets", href: "/logistics" },
+                  { label: "Labor Protocol", href: "/safety" }
+                ].map((link) => (
+                   <li key={link.label}>
+                      <Link href={link.href} className="text-slate-500 text-sm font-bold uppercase tracking-widest hover:text-blue-600 flex items-center gap-2 group">
+                         <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-blue-500" />
+                         {link.label}
+                      </Link>
+                   </li>
+                ))}
+             </ul>
           </div>
 
+          <div className="col-span-12 md:col-span-4 lg:col-span-3">
+             <div className="p-6 rounded-3xl bg-blue-600 text-white shadow-2xl shadow-blue-500/20 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:scale-125 transition-transform duration-700">
+                   <Cpu className="w-20 h-20" />
+                </div>
+                <h5 className="text-lg font-black uppercase tracking-tighter italic mb-2 relative z-10">Neural Pulse Subscription</h5>
+                <p className="text-[10px] font-bold text-blue-100 uppercase tracking-widest mb-6 relative z-10">Get real-time conservation alerts.</p>
+                <div className="relative z-10 flex gap-2">
+                   <input 
+                      type="text" 
+                      placeholder="HEX_NODE_ID" 
+                      className="bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-[10px] font-bold tracking-widest outline-none focus:bg-white/20 w-full placeholder:text-white/40" 
+                   />
+                   <button className="w-10 h-10 rounded-xl bg-white text-blue-600 flex items-center justify-center shrink-0 hover:scale-105 active:scale-95 transition-all">
+                      <ChevronRight className="w-5 h-5" />
+                   </button>
+                </div>
+             </div>
+          </div>
         </div>
 
-        {/* Binary Footer */}
-        <div className="mt-20 pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+        {/* Global Footer */}
+        <div className="mt-20 pt-10 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-6">
            <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.4em]">
               © 2026 HERITAGE-X PLATFORM · INDIAN CULTURE INTEGRATION MODULE
            </p>
            <div className="flex items-center gap-8">
               <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                 Created with <Heart className="w-3 h-3 text-red-500 fill-red-500" /> by Antigravity Agency
+                 Built for GIET University · B.Tech Final Project 2026
               </p>
-              <div className="flex items-center gap-2 px-3 py-1 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20 text-[8px] font-black uppercase">
+              <div className="flex items-center gap-2 px-3 py-1 rounded bg-blue-600/10 text-blue-600 border border-blue-500/20 text-[8px] font-black uppercase">
                  Verified Protocol
               </div>
            </div>
@@ -124,4 +127,6 @@ export function Footer() {
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

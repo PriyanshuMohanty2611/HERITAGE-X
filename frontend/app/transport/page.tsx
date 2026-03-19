@@ -8,8 +8,21 @@ import {
   MapPin, Navigation2, Clock, Star, Zap, Car, Bike, Bus,
   ChevronRight, X, CheckCircle2, Loader2, Send, IndianRupee,
   User, TrendingUp, Phone, Wallet, RefreshCw, Locate, Crosshair,
-  Search, Shield, AlertCircle, ArrowDown, Sparkles
+  Search, Shield, AlertCircle, ArrowDown, Sparkles, Map as MapIcon,
+  ChevronDown, MessageSquare, BrainCircuit
 } from "lucide-react";
+import dynamic from "next/dynamic";
+
+// Dynamic Map Import to prevent SSR issues
+const NeuralRouteMap = dynamic(() => import("../../components/NeuralRouteMap"), { 
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full bg-slate-950 flex flex-col items-center justify-center gap-6">
+       <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
+       <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.5em]">Initializing Neural Topology...</p>
+    </div>
+  )
+});
 
 // ─── Heritage Destinations ────────────────────────────────────────────────────
 const HERITAGE_PLACES = [
@@ -209,36 +222,44 @@ function BudgetPlanner() {
 export default function TransportPage() {
   const [pickup, setPickup] = useState("");
   const [drop, setDrop] = useState("");
-  const [selectedVehicle, setV] = useState<string | null>(null);
+  const [selectedVehicle, setV] = useState<string>("auto");
   const [bookingState, setBookingState] = useState<"idle" | "searching" | "found" | "booked">("idle");
   const [nearbyDrivers, setNearbyDrivers] = useState<any[]>([]);
   const [selectedDriver, setSelectedDriver] = useState<any>(null);
-  const [distance, setDistance] = useState(0);
-  const [eta, setEta] = useState(0);
   const [fare, setFare] = useState(0);
   const [locating, setLocating] = useState(false);
-  const [locError, setLocError] = useState("");
-  const [bookId] = useState(() => `HTX-${Math.floor(Math.random() * 90000 + 10000)}`);
   const [paymentStep, setPaymentStep] = useState<"idle" | "payment" | "scanner">("idle");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [bookId] = useState(() => `HTX-${Math.floor(Math.random() * 90000 + 10000)}`);
+
+  // Map States
+  const [sourceCoords, setSourceCoords] = useState<[number, number]>([20.2961, 85.8245]); // Default Bhubaneswar
+  const [destCoords, setDestCoords] = useState<[number, number]>([19.8876, 86.0945]); // Default Konark
 
   const v = VEHICLE_TYPES.find(x => x.id === selectedVehicle);
 
   const detectLocation = () => {
     setLocating(true);
-    setTimeout(() => {
-      setPickup("PRE SENT LOCATION");
-      setLocating(false);
-    }, 1500);
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        const { latitude, longitude } = pos.coords;
+        setSourceCoords([latitude, longitude]);
+        setPickup("Current Location (Synced)");
+        setLocating(false);
+      }, () => {
+        setPickup("Bhubaneswar CBD Node");
+        setLocating(false);
+      });
+    } else {
+      setTimeout(() => { setPickup("Manual Node Input Required"); setLocating(false); }, 1000);
+    }
   };
 
   const searchVehicles = () => {
     if (!pickup || !drop || !selectedVehicle) return;
     setBookingState("searching");
     setTimeout(() => {
-      setDistance(4.2);
       setFare(v!.min + 40);
-      setEta(v!.baseEta + 2);
       setNearbyDrivers(DRIVERS[selectedVehicle!] || []);
       setBookingState("found");
     }, 2000);
@@ -249,153 +270,203 @@ export default function TransportPage() {
   const reset = () => { setBookingState("idle"); setSelectedDriver(null); setPaymentStep("idle"); };
 
   return (
-    <main className="heritage-page-shell flex h-dvh w-screen font-sans overflow-hidden bg-slate-950 text-white relative">
-      <div className="absolute inset-x-0 top-0 h-[500px] z-0 opacity-40 bg-linear-to-b from-blue-600/20 to-transparent pointer-events-none" />
+    <main className="heritage-page-shell flex h-screen w-full font-sans overflow-hidden bg-slate-950">
       <Sidebar />
       <div className="flex-1 flex flex-col relative z-10 overflow-hidden">
-        <TopHeader />
-        
-        <div className="flex-1 overflow-y-auto p-6 lg:p-10 scrollbar-hide">
-          <div className="max-w-[1600px] mx-auto space-y-10">
-            <div className="grid grid-cols-12 gap-10 items-start">
-              
-              {/* Left Column: Booking Terminal (Spans 4/12) */}
-              <div className="col-span-12 xl:col-span-4 flex flex-col gap-10">
-                <div className="p-10 rounded-4xl bg-slate-900 border border-white/5 shadow-2xl space-y-10">
-                   <header className="flex items-center justify-between">
-                      <div className="flex items-center gap-5">
-                        <div className="w-14 h-14 rounded-2xl bg-orange-600/20 border border-orange-500/30 flex items-center justify-center">
-                          <Navigation2 className="w-7 h-7 text-orange-500" />
-                        </div>
-                        <div>
-                          <h2 className="text-2xl font-black text-white uppercase italic tracking-tight">Mobility Hub</h2>
-                          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Multi-Vendor Sync Active</p>
-                        </div>
-                      </div>
-                      <div className="px-4 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
-                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-tighter animate-pulse">Live</span>
-                      </div>
-                   </header>
+        <div className="header-neural h-20 flex items-center justify-between px-6 z-30 shrink-0 bg-slate-900/80 backdrop-blur-xl border-b border-white/5">
+          <TopHeader />
+        </div>
 
-                   {/* States Logic */}
+        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+
+          {/* Left Panel: Alpha Fleet Control (Spans 1/3) */}
+           <div className="w-full lg:w-[480px] h-full bg-slate-900/90 backdrop-blur-3xl border-r border-white/10 z-20 flex flex-col shadow-2xl animate-in slide-in-from-left duration-700">
+              <div className="flex-1 overflow-y-auto p-6 md:p-8 lg:p-16 scrollbar-hide space-y-16">
+                 <header className="flex flex-wrap items-center justify-between gap-8">
+                    <div className="flex items-center gap-4 lg:gap-8">
+                       <div className="w-16 h-16 rounded-2xl bg-orange-600/20 border border-orange-500/30 flex items-center justify-center shrink-0">
+                         <Navigation2 className="w-8 h-8 text-orange-500" />
+                       </div>
+                       <div>
+                         <h2 className="text-[clamp(1.5rem,5vw,2.5rem)] font-black text-white uppercase italic tracking-tight">Fleet Commander</h2>
+                         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-2 border-b border-orange-500/20 pb-2">Multi-Vendor Sync Active</p>
+                       </div>
+                    </div>
+                   <div className="p-1 px-3 bg-blue-500/10 border border-blue-500/30 rounded-full flex items-center gap-2">
+                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
+                     <span className="text-[9px] font-black text-blue-400 uppercase tracking-widest">Neural Link</span>
+                   </div>
+                </header>
+
+                <div className="space-y-6">
+                   <div className="relative space-y-2">
+                      <div className="absolute left-[21px] top-10 bottom-10 w-0.5 bg-linear-to-b from-emerald-500 to-rose-500 opacity-20" />
+                      <LocationInput
+                         value={pickup}
+                         onChange={setPickup}
+                         onSelect={(name: string) => { setPickup(name); setSourceCoords([20.2961, 85.8245]); }} // Demo Coords
+                         onLocate={detectLocation}
+                         locating={locating}
+                         placeholder="Current Node Location..."
+                         dotColor="#10b981"
+                      />
+                      <LocationInput
+                         value={drop}
+                         onChange={setDrop}
+                         onSelect={(name: string) => { setDrop(name); setDestCoords([19.8876, 86.0945]); }} // Demo Coords
+                         placeholder="Designate Target Node..."
+                         dotColor="#f43f5e"
+                      />
+                   </div>
+
                    {bookingState === "booked" && selectedDriver ? (
-                     <div className="space-y-8 animate-in zoom-in duration-500">
-                        <div className="p-8 rounded-4xl bg-emerald-500/5 border border-emerald-500/20">
-                           <div className="flex items-center gap-5 mb-8">
-                              <CheckCircle2 className="w-8 h-8 text-emerald-400" />
-                              <div>
-                                 <h3 className="text-xl font-black text-white uppercase italic tracking-tight">Deployment Ready</h3>
-                                 <p className="text-[10px] text-emerald-500 font-black tracking-widest uppercase">ID: {bookId}</p>
-                              </div>
-                           </div>
-                           <div className="flex items-center gap-5 p-6 bg-white/5 rounded-3xl border border-white/10 mb-8">
-                              <img src={selectedDriver.img} className="w-20 h-20 rounded-2xl object-cover border border-white/10" alt="" />
-                              <div className="flex-1">
-                                 <p className="text-lg font-black text-white uppercase tracking-tight">{selectedDriver.name}</p>
-                                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{selectedDriver.vehicle} · {selectedDriver.plate}</p>
-                              </div>
-                              <p className="text-3xl font-black text-emerald-400">₹{fare}</p>
-                           </div>
-                           <button onClick={reset} className="w-full py-5 bg-white text-black font-black rounded-2xl uppercase text-[11px] tracking-widest hover:bg-blue-600 hover:text-white transition-all">Phase Completion</button>
-                        </div>
-                     </div>
+                      <div className="p-8 rounded-4xl bg-emerald-500/5 border border-emerald-500/20 space-y-8 animate-in zoom-in duration-500">
+                         <div className="flex items-center gap-5">
+                            <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+                            <div>
+                               <h3 className="text-xl font-black text-white uppercase italic tracking-tight">Deployment Ready</h3>
+                               <p className="text-[10px] text-emerald-500 font-black tracking-widest uppercase">Mission ID: {bookId}</p>
+                            </div>
+                         </div>
+                         <div className="flex items-center gap-5 p-6 bg-white/5 rounded-3xl border border-white/10">
+                            <img src={selectedDriver.img} className="w-20 h-20 rounded-2xl object-cover border border-white/10" alt="" />
+                            <div className="flex-1">
+                               <p className="text-lg font-black text-white uppercase tracking-tight">{selectedDriver.name}</p>
+                               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{selectedDriver.vehicle} · {selectedDriver.plate}</p>
+                            </div>
+                            <p className="text-3xl font-black text-emerald-400">₹{fare}</p>
+                         </div>
+                         <button onClick={reset} className="w-full py-5 bg-white text-black font-black rounded-2xl uppercase text-[11px] tracking-widest hover:bg-blue-600 hover:text-white transition-all">End Mission</button>
+                      </div>
                    ) : bookingState === "found" ? (
-                      <div className="space-y-6">
+                      <div className="space-y-4">
+                         <div className="flex justify-between items-center mb-4">
+                            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Available Units nearby</h4>
+                            <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">{nearbyDrivers.length} Found</span>
+                         </div>
                          {nearbyDrivers.map((d, i) => (
-                            <div key={i} className="p-8 shadow-inner rounded-3xl bg-white/5 border border-white/5 flex items-center gap-6 group hover:border-blue-500/50 transition-all">
-                               <img src={d.img} className="w-16 h-16 rounded-2xl" alt="" />
+                            <button key={i} onClick={() => confirmBooking(d)} className="w-full text-left p-6 rounded-3xl bg-white/5 border border-white/5 flex items-center gap-6 group hover:border-blue-500/50 hover:bg-white/10 transition-all">
+                               <img src={d.img} className="w-14 h-14 rounded-2xl border border-white/10" alt="" />
                                <div className="flex-1">
                                   <p className="font-black text-white uppercase text-base tracking-tight">{d.name}</p>
-                                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">{d.vehicle} · {d.plate}</p>
+                                  <div className="flex items-center gap-3 mt-1">
+                                     <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">{d.vehicle}</span>
+                                     <div className="w-1 h-1 bg-slate-700 rounded-full" />
+                                     <span className="text-[9px] text-emerald-400 font-black uppercase tracking-widest">{d.rating} ★</span>
+                                  </div>
                                </div>
-                               <button onClick={() => confirmBooking(d)} className="px-8 py-4 bg-white text-black hover:bg-blue-600 hover:text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">Engage</button>
-                            </div>
+                               <div className="text-right">
+                                  <p className="text-xl font-black text-white">₹{fare}</p>
+                                  <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-1">ETA: 4 MIN</p>
+                               </div>
+                            </button>
                          ))}
+                         <button onClick={() => setBookingState("idle")} className="w-full py-4 text-slate-500 font-black uppercase text-[10px] tracking-widest hover:text-white transition-all">Cancel Scan</button>
                       </div>
                    ) : (
-                      <div className="space-y-10">
-                         <div className="space-y-6">
-                            <LocationInput 
-                               value={pickup} 
-                               onChange={setPickup} 
-                               onSelect={setPickup} 
-                               onLocate={detectLocation}
-                               locating={locating}
-                               placeholder="Establish Origin Node..." 
-                               dotColor="#10b981" 
-                            />
-                            <LocationInput 
-                               value={drop} 
-                               onChange={setDrop} 
-                               onSelect={setDrop} 
-                               placeholder="Designate Target..." 
-                               dotColor="#f43f5e" 
-                            />
-                         </div>
-                         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+                      <>
+                         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
                             {VEHICLE_TYPES.map(vt => {
                                const selected = selectedVehicle === vt.id;
                                return (
-                                 <button key={vt.id} onClick={() => setV(vt.id)} className={`p-8 rounded-[2.5rem] border transition-all flex flex-col items-center justify-center gap-4 group/v ${selected ? "border-blue-500 bg-blue-600/10 ring-8 ring-blue-500/10" : "bg-white/5 border-white/5 hover:border-white/10"}`}>
-                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-4xl transform transition-transform duration-500 ${selected ? "scale-110" : "group-hover/v:scale-110"}`}>
+                                 <button key={vt.id} onClick={() => setV(vt.id)} className={`p-4 lg:p-8 rounded-4xl border transition-all flex flex-col items-center justify-center gap-4 group/v ${selected ? "border-blue-500 bg-blue-600/10 ring-4 ring-blue-500/20" : "bg-white/5 border-white/5 hover:border-white/10"}`}>
+                                    <div className={`text-4xl transform transition-transform duration-500 ${selected ? "scale-110" : "group-hover/v:scale-110"}`}>
                                        {vt.emoji}
                                     </div>
-                                    <span className="text-[10px] font-black text-white uppercase tracking-tighter text-center">{vt.label}</span>
+                                    <div className="text-center">
+                                       <p className="text-[11px] font-black text-white uppercase tracking-tighter">{vt.label}</p>
+                                       <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mt-1">₹{vt.rate}/KM</p>
+                                    </div>
                                  </button>
                                );
                             })}
                          </div>
-                         <button onClick={searchVehicles} disabled={!pickup || !drop || !selectedVehicle || bookingState === "searching"} className="group w-full py-6 bg-linear-to-r from-orange-600 to-blue-600 text-white font-black rounded-3xl uppercase text-xs tracking-widest hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-40 shadow-xl overflow-hidden relative">
-                            <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                            <div className="flex items-center justify-center gap-3 relative z-10">
-                               {bookingState === "searching" ? <Loader2 className="w-6 h-6 animate-spin mx-auto text-white" /> : <><Zap className="w-5 h-5 animate-pulse" /> Initialize Deployment</>}
-                            </div>
-                         </button>
-                      </div>
+                        <button onClick={searchVehicles} disabled={!pickup || !drop || !selectedVehicle || bookingState === "searching"} className="group w-full py-6 bg-linear-to-r from-orange-600 to-blue-600 text-white font-black rounded-3xl uppercase text-xs tracking-widest hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-40 shadow-xl overflow-hidden relative">
+                           <div className="absolute inset-x-0 bottom-0 top-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                           <div className="flex items-center justify-center gap-3 relative z-10">
+                              {bookingState === "searching" ? <Loader2 className="w-6 h-6 animate-spin mx-auto text-white" /> : <><Car className="w-5 h-5 group-hover:rotate-12 transition-transform" /> Sync Fleet Fleet Units</>}
+                           </div>
+                        </button>
+                      </>
                    )}
                 </div>
-              </div>
 
-              {/* Right Column: Insights & Budget (Spans 8/12) */}
-              <div className="col-span-12 xl:col-span-8 flex flex-col gap-10">
-                 <div className="grid grid-cols-2 gap-10">
-                    <div className="p-10 rounded-4xl bg-slate-900 border border-white/5 shadow-2xl space-y-10">
-                       <header className="flex items-center gap-5">
-                          <IndianRupee className="w-8 h-8 text-amber-500" />
-                          <h3 className="text-2xl font-black text-white uppercase italic tracking-tight">Market Analytics</h3>
-                       </header>
-                       <div className="grid grid-cols-2 gap-6">
-                          {[
-                            { l: "HOUSING", v: "₹2,500+", c: "text-blue-400" },
-                            { l: "ENERGY", v: "₹450", c: "text-emerald-400" },
-                          ].map(s => (
-                            <div key={s.l} className="p-8 rounded-3xl bg-white/5 border border-white/10">
-                               <p className={`text-3xl font-black ${s.c}`}>{s.v}</p>
-                               <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-1">{s.l}</p>
-                            </div>
-                          ))}
-                       </div>
-                    </div>
-                    <div className="p-10 rounded-4xl bg-slate-900 border border-white/5 shadow-2xl space-y-10">
-                       <header className="flex items-center gap-5">
-                          <TrendingUp className="w-8 h-8 text-blue-500" />
-                          <h3 className="text-2xl font-black text-white uppercase italic tracking-tight">Live Intelligence</h3>
-                       </header>
-                       <div className="space-y-5">
-                          {["CONGESTION NEAR KONARK NODE", "NEW GREEN CORRIDOR ACTIVE"].map((t, i) => (
-                             <div key={i} className="flex items-center gap-5 p-5 bg-white/5 rounded-2xl border border-white/5">
-                                <span className="w-2.5 h-2.5 bg-blue-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,1)]" />
-                                <p className="text-[11px] font-bold text-slate-200 uppercase tracking-widest">{t}</p>
-                             </div>
-                          ))}
-                       </div>
-                    </div>
-                 </div>
-                 <div className="flex-1 rounded-4xl bg-slate-900 border border-white/5 shadow-2xl overflow-hidden min-h-[700px]">
-                    <BudgetPlanner />
-                 </div>
-              </div>
-            </div>
+                <div className="pt-10 border-t border-white/5">
+                   <h5 className="text-[10px] font-black text-violet-400 uppercase tracking-[0.3em] mb-6 flex items-center gap-3">
+                      <Sparkles className="w-4 h-4" /> AI Tactical Advisor
+                   </h5>
+                   <div className="p-6 rounded-3xl bg-violet-600/5 border border-violet-500/20 space-y-4">
+                      <div className="flex items-start gap-4">
+                         <div className="w-10 h-10 rounded-2xl bg-violet-600/20 flex items-center justify-center shrink-0">
+                            <BrainCircuit className="w-5 h-5 text-violet-400" />
+                         </div>
+                         <p className="text-xs text-slate-300 italic leading-relaxed">"Traffic density near {drop || 'Target Node'} is moderate. Opt for a 2-Wheeler for 15% speed optimization."</p>
+                      </div>
+                      <div className="flex gap-4">
+                         <input type="text" placeholder="Query Intelligence..." className="flex-1 bg-slate-950/50 border border-white/10 rounded-xl px-4 py-3 text-[10px] text-white outline-none focus:border-violet-500/50" />
+                         <button className="w-10 h-10 bg-violet-600 text-white rounded-xl flex items-center justify-center hover:bg-violet-500 transition-all">
+                            <Send className="w-4 h-4" />
+                         </button>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </div>
+
+          {/* Right Panel: Topological Command Map */}
+          <div className="flex-1 h-full relative z-10 bg-slate-950">
+             <NeuralRouteMap 
+                source={{ lat: sourceCoords[0], lng: sourceCoords[1] }}
+                destination={{ lat: destCoords[0], lng: destCoords[1] }}
+                onUpdateSource={(coords) => setSourceCoords([coords.lat, coords.lng])}
+                onUpdateDestination={(coords) => setDestCoords([coords.lat, coords.lng])}
+                onClose={() => {}} 
+                inline={true}
+             />
+             
+             {/* Map Overlay: Live Stats */}
+             <div className="absolute top-10 right-10 z-30 space-y-4 pointer-events-none">
+                <div className="p-8 rounded-[2.5rem] bg-slate-900/80 backdrop-blur-3xl border border-white/10 shadow-2xl flex items-center gap-8 animate-in slide-in-from-right duration-700">
+                   <div className="flex items-center gap-6 pr-8 border-r border-white/10">
+                      <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+                        <TrendingUp className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Optimal Node</p>
+                        <p className="text-xl font-black text-white uppercase italic">Active</p>
+                      </div>
+                   </div>
+                   <div className="flex items-center gap-6">
+                      <div className="w-12 h-12 rounded-2xl bg-blue-500/20 flex items-center justify-center text-blue-400">
+                        <IndianRupee className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Fleet Yield</p>
+                        <p className="text-xl font-black text-white uppercase italic">₹{fare || '0'}</p>
+                      </div>
+                   </div>
+                </div>
+             </div>
+
+             {/* Map Controls: Bottom Layer */}
+             <div className="absolute bottom-10 left-10 right-10 z-30 flex items-center justify-between pointer-events-none">
+                <div className="p-6 rounded-3xl bg-slate-900/80 backdrop-blur-3xl border border-white/10 shadow-2xl pointer-events-auto animate-in slide-in-from-bottom duration-700">
+                   <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Tactical Insights</p>
+                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                      {[
+                        { label: "Transit Time", val: "24 MIN", color: "text-blue-400" },
+                        { label: "Corridor Risk", val: "LOW", color: "text-emerald-400" },
+                        { label: "Energy Cost", val: "₹12/KM", color: "text-amber-400" },
+                        { label: "Sync Units", val: "128 LIVE", color: "text-violet-400" },
+                      ].map(stat => (
+                        <div key={stat.label} className="space-y-1">
+                           <p className="text-[8px] font-black text-slate-600 uppercase tracking-widest">{stat.label}</p>
+                           <p className={`text-sm font-black uppercase ${stat.color}`}>{stat.val}</p>
+                        </div>
+                      ))}
+                   </div>
+                </div>
+             </div>
           </div>
         </div>
 

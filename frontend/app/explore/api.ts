@@ -7,7 +7,14 @@ export const api = {
     return res.json();
   },
   
-  createBooking: async (bookingData: any) => {
+  createBooking: async (bookingData: {
+    username: string;
+    monument_name: string;
+    date: string;
+    time: string;
+    type: string;
+    total_price: number;
+  }) => {
     const res = await fetch(`${BASE_URL}/api/booking/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -17,7 +24,7 @@ export const api = {
     return res.json();
   },
 
-  getAiSuggestion: async (message: string) => {
+  getAiSuggestion: async (message: string): Promise<{ response?: string; suggestion?: string }> => {
     const res = await fetch(`${BASE_URL}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

@@ -109,7 +109,7 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
     return (
-        <main className="heritage-page-shell flex min-h-screen w-screen items-center justify-center p-4 relative overflow-hidden" style={{ background: "var(--background)" }}>
+        <main className="heritage-page-shell flex min-h-screen w-screen items-center justify-center p-4 relative overflow-hidden bg-transparent">
             <div className="page-bg" style={{ backgroundImage: "url('/assets/Meenakshi Temple/meenakshi-amman-temple-india.avif')" }} />
 
             <div className="w-full max-w-md relative z-10 rounded-3xl p-8 shadow-2xl" style={{ background: "var(--card-bg)", border: "1px solid var(--card-border)", backdropFilter: "blur(20px)" }}>

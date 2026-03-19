@@ -107,7 +107,7 @@ export default function LogisticsPage() {
   ];
 
   return (
-    <main className="heritage-page-shell flex h-dvh w-screen font-sans overflow-hidden" style={{ background: "var(--background)", color: "var(--foreground)" }}>
+    <main className="heritage-page-shell flex h-dvh w-screen font-sans overflow-hidden bg-transparent">
       {/* Background image — Logistics page */}
       <div className="page-bg" style={{ backgroundImage: "url('/assets/Harmandir Sahib/The_Golden_Temple_of_Amrithsar_7.jpg')" }} />
       <Sidebar />
@@ -181,22 +181,11 @@ export default function LogisticsPage() {
           </div>
         )}
 
-        <div className="shrink-0 px-4 md:px-6 py-4 header-glass pt-16 lg:pt-4">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <div>
-              <div className="flex items-center gap-3 mb-1">
-                <div className="p-2 rounded-xl" style={{ background: "#fffbeb", border: "1px solid #fde68a" }}>
-                  <Hotel className="w-5 h-5 text-amber-500" />
-                </div>
-                <h1 className="text-xl font-black tracking-tight" style={{ color: "var(--text-strong)" }}>Hotels & Food</h1>
-              </div>
-              <p className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: "var(--text-muted)" }}>Heritage Region · Verified Hosts · ASI Connected</p>
-            </div>
-            <TopHeader />
-          </div>
+        <div className="header-neural h-20 flex items-center justify-between px-6 z-20 shrink-0 capitalize">
+          <TopHeader />
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 scrollbar-hide">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 scrollbar-hide neural-content-shell">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {LOGISTICS_DATA
               .filter(item => activeTab === 'all' || (activeTab === 'hotels' ? item.type === 'Hotel' : item.type !== 'Hotel'))
