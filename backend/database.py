@@ -5,11 +5,13 @@ from pymongo import MongoClient
 load_dotenv()
 
 # ─── MongoDB Setup ──────────────────────────────────────────────────────────
-MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
+# Check for common SaaS naming conventions
+MONGO_URL = os.getenv("MONGO_URL") or os.getenv("MONGODB_URI") or "mongodb://localhost:27017"
 mongo_client = None
 mongo_db = None
 
 try:
+    print(f"📡 Attempting MongoDB link...")
     mongo_client = MongoClient(MONGO_URL, serverSelectionTimeoutMS=5000)
     # Ping check
     mongo_client.admin.command("ping")
